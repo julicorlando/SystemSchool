@@ -179,6 +179,10 @@ $notificacoes_nao_lidas = contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 
         <a href="frequencia.php"><button>Controle de Frequência</button></a>
         <a href="relatorios.php"><button>Relatórios</button></a>
         <a href="comunicacao.php"><button>Comunicação</button></a>
+        <a href="calendario.php"><button>Calendário Escolar</button></a>
+        <a href="financeiro.php"><button>Módulo Financeiro</button></a>
+        <a href="atividades.php"><button>Atividades</button></a>
+        <a href="documentos.php"><button>Documentos</button></a>
     </div>
 
     <!-- Turmas -->
