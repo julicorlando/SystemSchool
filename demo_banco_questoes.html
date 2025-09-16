@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo - Banco de Questões</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .demo-section { 
+            margin: 30px 0; 
+            padding: 20px; 
+            border: 2px solid #007bff; 
+            border-radius: 10px; 
+            background: #f8f9fa; 
+        }
+        .demo-title { 
+            color: #007bff; 
+            font-size: 1.5em; 
+            margin-bottom: 15px; 
+        }
+        .feature-list { 
+            list-style-type: none; 
+            padding: 0; 
+        }
+        .feature-list li { 
+            margin: 8px 0; 
+            padding: 8px; 
+            background: white; 
+            border-radius: 5px; 
+            border-left: 4px solid #28a745; 
+        }
+        .questao-exemplo {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+        .alternativa {
+            margin: 5px 0;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 3px;
+        }
+        .alternativa.correta {
+            background: #d4edda;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🎓 Banco de Questões - Sistema Escolar</h1>
+    <p><strong>Módulo completo implementado para gestão de questões e provas</strong></p>
+    
+    <div class="demo-section">
+        <div class="demo-title">📝 Dashboard do Professor - Novas Funcionalidades</div>
+        <ul class="feature-list">
+            <li><strong>Minhas Questões</strong> - Visualizar e gerenciar todas as questões cadastradas</li>
+            <li><strong>Cadastrar Questão</strong> - Criar novas questões de múltipla escolha</li>
+            <li><strong>Minhas Provas</strong> - Gerenciar provas criadas com questões sorteadas</li>
+            <li><strong>Criar Prova</strong> - Gerar provas automaticamente com sorteio de questões</li>
+            <li><strong>Matérias</strong> - Gerenciar disciplinas disponíveis</li>
+        </ul>
+    </div>
+    
+    <div class="demo-section">
+        <div class="demo-title">📚 Exemplo de Questão Cadastrada</div>
+        <div class="questao-exemplo">
+            <div style="font-weight: bold; margin-bottom: 10px;">
+                Qual é a fórmula para calcular a área de um círculo?
+            </div>
+            <div class="alternativa">A) π × r</div>
+            <div class="alternativa correta">B) π × r²</div>
+            <div class="alternativa">C) 2 × π × r</div>
+            <div class="alternativa">D) π × d</div>
+            <div style="margin-top: 10px; color: #666; font-size: 0.9em;">
+                <strong>Matéria:</strong> Matemática | <strong>Resposta:</strong> B | <strong>Professor:</strong> João Silva
+            </div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <div class="demo-title">🎯 Funcionalidades Principais</div>
+        <ul class="feature-list">
+            <li><strong>CRUD Completo</strong> - Criar, visualizar, editar e excluir questões</li>
+            <li><strong>Organização por Matéria</strong> - Questões categorizadas por disciplina</li>
+            <li><strong>Sorteio Automático</strong> - Geração automática de provas com questões aleatórias</li>
+            <li><strong>Gestão de Provas</strong> - Criar, editar e imprimir provas personalizadas</li>
+            <li><strong>Impressão Profissional</strong> - Layout otimizado para impressão com e sem gabarito</li>
+            <li><strong>Segurança</strong> - Professores só acessam suas próprias questões e provas</li>
+            <li><strong>Responsivo</strong> - Interface adaptável a diferentes dispositivos</li>
+        </ul>
+    </div>
+    
+    <div class="demo-section">
+        <div class="demo-title">🗄️ Estrutura do Banco de Dados</div>
+        <p><strong>4 novas tabelas criadas:</strong></p>
+        <ul class="feature-list">
+            <li><strong>materias</strong> - Disciplinas/matérias disponíveis</li>
+            <li><strong>questoes</strong> - Questões com enunciado, alternativas e resposta correta</li>
+            <li><strong>provas</strong> - Provas criadas pelos professores</li>
+            <li><strong>prova_questoes</strong> - Relacionamento entre provas e questões</li>
+        </ul>
+    </div>
+    
+    <div class="demo-section">
+        <div class="demo-title">📋 Workflow de Uso</div>
+        <ol style="padding-left: 20px;">
+            <li>Professor faz login no sistema</li>
+            <li>Acessa "Matérias" para verificar disciplinas disponíveis</li>
+            <li>Usa "Cadastrar Questão" para criar questões de múltipla escolha</li>
+            <li>Visualiza questões em "Minhas Questões" com filtros e ações</li>
+            <li>Cria provas em "Criar Prova" selecionando matéria e quantidade</li>
+            <li>Sistema sorteia questões automaticamente</li>
+            <li>Professor pode visualizar, editar e imprimir provas criadas</li>
+        </ol>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <h3>✅ Implementação Completa Finalizada</h3>
+        <p>Todos os requisitos do problema foram atendidos com sucesso!</p>
+    </div>
+</div>
+</body>
+</html>
