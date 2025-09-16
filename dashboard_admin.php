@@ -35,6 +35,7 @@ $turmas = $conn->query("SELECT t.id, t.nome, t.turno, p.nome as professor, t.fin
     <a href="cadastro_professor.php"><button>Cadastrar Professor</button></a>
     <a href="cadastro_aluno.php"><button>Cadastrar Aluno</button></a>
     <a href="notas_faltas.php"><button>Notas e Faltas</button></a>
+    <a href="listar_materias.php"><button>Gerenciar Matérias</button></a>
 
     <h2>Turmas</h2>
     <table>
