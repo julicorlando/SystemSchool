@@ -1,72 +1,71 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 include "conexao.php";
+include_once "funcoes.php";
 
-$usuario = limpar_entrada($_POST['usuario'] ?? '');
-$senha = $_POST['senha'] ?? '';
-$tipo = $_POST['tipo'] ?? '';
+// Captura e limpa entradas
+$usuario = isset($_POST['usuario']) ? limpar_entrada($_POST['usuario']) : '';
+$senha   = isset($_POST['senha']) ? $_POST['senha'] : '';
 
-if (empty($usuario) || empty($senha) || empty($tipo)) {
+// Validação
+if (empty($usuario) || empty($senha)) {
     echo "<script>alert('Preencha todos os campos');window.location='index.php';</script>";
     exit;
 }
 
-$tabela = '';
-switch($tipo) {
-    case 'admin':
-        $tabela = 'admins';
-        break;
-    case 'professor':
-        $tabela = 'professores';
-        break;
-    case 'aluno':
-        $tabela = 'alunos';
-        break;
-    default:
-        echo "<script>alert('Tipo de usuário inválido');window.location='index.php';</script>";
+// Array de tipos/tabelas
+$tipos = [
+    'admin'     => "SELECT id, usuario, senha, nome FROM admins WHERE usuario = ?",
+    'professor' => "SELECT id, usuario, senha, nome FROM professores WHERE usuario = ?",
+    'aluno'     => "SELECT id, usuario, senha, nome FROM alunos WHERE usuario = ?"
+];
+
+foreach ($tipos as $tipo => $sql) {
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        // Mostra erro se prepare falhar
+        echo "<script>alert('Erro no prepare da tabela $tipo');window.location='index.php';</script>";
         exit;
-}
+    }
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $hash = $row['senha'];
 
-// Usar prepared statement para segurança
-$stmt = $conn->prepare("SELECT id, nome, senha FROM $tabela WHERE usuario = ?");
-$stmt->bind_param("s", $usuario);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    
-    // Verificar se a senha é hash ou texto puro (para compatibilidade)
-    $senha_valida = false;
-    if (password_get_info($row['senha'])['algo']) {
-        // Senha criptografada
-        $senha_valida = verificar_senha($senha, $row['senha']);
-    } else {
-        // Senha em texto puro (sistema antigo)
-        $senha_valida = ($senha === $row['senha']);
-        
-        // Atualizar para senha criptografada
-        if ($senha_valida) {
-            $nova_senha = criptografar_senha($senha);
-            $update_stmt = $conn->prepare("UPDATE $tabela SET senha = ? WHERE id = ?");
-            $update_stmt->bind_param("si", $nova_senha, $row['id']);
-            $update_stmt->execute();
+        // VERIFICA: hash ou texto puro
+        $valid = false;
+        if (strlen($hash) > 0 && strpos($hash, '$2y$') === 0) {
+            // Senha está em hash
+            if (password_verify($senha, $hash)) {
+                $valid = true;
+            }
+        } else {
+            // Senha salva em texto puro
+            if ($senha === $hash) {
+                $valid = true;
+            }
+        }
+        if ($valid) {
+            // Login OK
+            $_SESSION['usuario'] = $row['usuario'];
+            $_SESSION['tipo']    = $tipo;
+            $_SESSION['id']      = $row['id'];
+            $_SESSION['nome']    = (!empty($row['nome'])) ? $row['nome'] : $row['usuario'];
+            $stmt->close();
+            $conn->close();
+            header("Location: dashboard_{$tipo}.php");
+            exit;
         }
     }
-    
-    if ($senha_valida) {
-        $_SESSION['usuario'] = $usuario;
-        $_SESSION['tipo'] = $tipo;
-        $_SESSION['id'] = $row['id'];
-        $_SESSION['nome'] = $row['nome'];
-        
-        // Log de acesso (opcional - pode ser implementado depois)
-        // log_acesso($conn, $row['id'], $tipo);
-        
-        header("Location: dashboard_{$tipo}.php");
-        exit;
-    }
+    $stmt->close();
 }
-
-echo "<script>alert('Login inválido');window.location='index.php';</script>";
+$conn->close();
+echo "<script>alert('Usuário ou senha inválidos');window.location='index.php';</script>";
+exit;
 ?>

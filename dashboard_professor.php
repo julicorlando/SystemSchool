@@ -72,7 +72,7 @@ $stats['atividades'] = $result->get_result()->fetch_assoc()['total'];
     <!-- Ações Rápidas -->
     <h2>Ações Rápidas</h2>
     <div class="quick-actions">
-        <a href="atividades.php"><button>Enviar/Ver Atividades</button></a>
+        <a href="atividades.php"><button>Enviar/Ver Atividades e conteúdos</button></a>
         <a href="notas_faltas.php"><button>Atribuir Notas e Faltas</button></a>
         <a href="frequencia.php"><button>Controle de Frequência</button></a>
         <a href="comunicacao.php"><button>Comunicação 

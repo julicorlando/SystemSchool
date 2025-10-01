@@ -1,0 +1,357 @@
+[15-Sep-2025 00:23:14 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'escola')
+#1 /home/josdevco/public_html/info/login.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[15-Sep-2025 00:24:07 UTC] PHP Parse error:  syntax error, unexpected variable "$conn" in /home/josdevco/public_html/info/conexao.php on line 8
+[15-Sep-2025 00:24:22 UTC] PHP Parse error:  syntax error, unexpected variable "$conn" in /home/josdevco/public_html/info/conexao.php on line 8
+[15-Sep-2025 00:25:08 UTC] PHP Parse error:  syntax error, unexpected variable "$conn" in /home/josdevco/public_html/info/conexao.php on line 8
+[15-Sep-2025 00:26:36 UTC] PHP Parse error:  syntax error, unexpected variable "$conn" in /home/josdevco/public_html/info/conexao.php on line 8
+[15-Sep-2025 00:26:42 UTC] PHP Parse error:  syntax error, unexpected variable "$conn" in /home/josdevco/public_html/info/conexao.php on line 8
+[15-Sep-2025 00:28:06 UTC] PHP Parse error:  syntax error, unexpected variable "$conn" in /home/josdevco/public_html/info/conexao.php on line 8
+[15-Sep-2025 00:41:50 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/josdevco/public_html/info/4l3m4.php:3
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(3): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'escola')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 3
+[15-Sep-2025 00:43:44 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:79
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(79): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 79
+[15-Sep-2025 00:44:03 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:79
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(79): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 79
+[15-Sep-2025 00:44:05 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:79
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(79): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 79
+[15-Sep-2025 00:45:14 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:79
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(79): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 79
+[15-Sep-2025 00:46:03 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:79
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(79): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 79
+[15-Sep-2025 00:46:05 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:79
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(79): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 79
+[15-Sep-2025 00:47:55 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:76
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(76): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 76
+[15-Sep-2025 00:50:11 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:88
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(88): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 88
+[15-Sep-2025 00:50:27 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/4l3m4.php:87
+Stack trace:
+#0 /home/josdevco/public_html/info/4l3m4.php(87): mysqli->query('INSERT INTO alu...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/4l3m4.php on line 87
+[15-Sep-2025 01:01:00 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 01:02:12 UTC] PHP Fatal error:  Cannot redeclare verificar_permissao() (previously declared in /home/josdevco/public_html/info/frequencia.php:6) in /home/josdevco/public_html/info/funcoes.php on line 69
+[15-Sep-2025 01:02:20 UTC] PHP Fatal error:  Cannot redeclare verificar_permissao() (previously declared in /home/josdevco/public_html/info/frequencia.php:6) in /home/josdevco/public_html/info/funcoes.php on line 69
+[15-Sep-2025 01:03:47 UTC] PHP Fatal error:  Cannot redeclare verificar_permissao() (previously declared in /home/josdevco/public_html/info/frequencia.php:6) in /home/josdevco/public_html/info/funcoes.php on line 69
+[15-Sep-2025 01:04:39 UTC] PHP Fatal error:  Cannot redeclare verificar_permissao() (previously declared in /home/josdevco/public_html/info/frequencia.php:11) in /home/josdevco/public_html/info/funcoes.php on line 69
+[15-Sep-2025 01:06:12 UTC] PHP Fatal error:  Cannot redeclare formatar_data_br() (previously declared in /home/josdevco/public_html/info/frequencia.php:31) in /home/josdevco/public_html/info/funcoes.php on line 77
+[15-Sep-2025 01:07:47 UTC] PHP Fatal error:  Cannot redeclare criar_notificacao() (previously declared in /home/josdevco/public_html/info/frequencia.php:21) in /home/josdevco/public_html/info/funcoes.php on line 107
+[15-Sep-2025 01:09:38 UTC] PHP Fatal error:  Cannot redeclare criptografar_senha() (previously declared in /home/josdevco/public_html/info/funcoes.php:3) in /home/josdevco/public_html/info/funcoes.php on line 3
+[15-Sep-2025 01:09:48 UTC] PHP Fatal error:  Cannot redeclare criptografar_senha() (previously declared in /home/josdevco/public_html/info/funcoes.php:3) in /home/josdevco/public_html/info/funcoes.php on line 3
+[15-Sep-2025 01:12:56 UTC] PHP Fatal error:  Cannot redeclare verificar_permissao() (previously declared in /home/josdevco/public_html/info/frequencia.php:13) in /home/josdevco/public_html/info/funcoes.php on line 69
+[15-Sep-2025 01:13:09 UTC] PHP Fatal error:  Cannot redeclare verificar_permissao() (previously declared in /home/josdevco/public_html/info/frequencia.php:13) in /home/josdevco/public_html/info/funcoes.php on line 69
+[15-Sep-2025 01:13:15 UTC] PHP Fatal error:  Cannot redeclare formatar_data_br() (previously declared in /home/josdevco/public_html/info/frequencia.php:29) in /home/josdevco/public_html/info/funcoes.php on line 77
+[15-Sep-2025 01:13:36 UTC] PHP Fatal error:  Cannot redeclare formatar_data_br() (previously declared in /home/josdevco/public_html/info/frequencia.php:29) in /home/josdevco/public_html/info/funcoes.php on line 77
+[15-Sep-2025 12:14:24 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/dashboard_admin.php on line 4
+[15-Sep-2025 12:14:25 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/dashboard_admin.php on line 66
+[15-Sep-2025 12:14:25 UTC] PHP Warning:  Undefined array key "nome" in /home/josdevco/public_html/info/dashboard_admin.php on line 144
+[15-Sep-2025 12:14:25 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/josdevco/public_html/info/dashboard_admin.php on line 144
+[15-Sep-2025 12:43:24 UTC] PHP Warning:  Undefined array key "professor_id" in /home/josdevco/public_html/info/calendario.php on line 27
+[15-Sep-2025 12:44:00 UTC] PHP Warning:  Undefined array key "professor_id" in /home/josdevco/public_html/info/calendario.php on line 27
+[15-Sep-2025 12:44:01 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/calendario.php:43
+Stack trace:
+#0 /home/josdevco/public_html/info/calendario.php(43): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/josdevco/public_html/info/calendario.php on line 43
+[15-Sep-2025 12:44:08 UTC] PHP Warning:  Undefined array key "professor_id" in /home/josdevco/public_html/info/calendario.php on line 27
+[15-Sep-2025 12:44:08 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/calendario.php:43
+Stack trace:
+#0 /home/josdevco/public_html/info/calendario.php(43): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/josdevco/public_html/info/calendario.php on line 43
+[15-Sep-2025 12:44:51 UTC] PHP Warning:  Undefined array key "professor_id" in /home/josdevco/public_html/info/calendario.php on line 27
+[15-Sep-2025 12:44:51 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/calendario.php:43
+Stack trace:
+#0 /home/josdevco/public_html/info/calendario.php(43): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/josdevco/public_html/info/calendario.php on line 43
+[15-Sep-2025 13:52:57 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/calendario.php:52
+Stack trace:
+#0 /home/josdevco/public_html/info/calendario.php(52): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/josdevco/public_html/info/calendario.php on line 52
+[15-Sep-2025 14:24:48 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:24:53 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:24:55 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:24:55 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:25:03 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:25:04 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:25:05 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:25:06 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:25:09 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:26:56 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:27:00 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:27:01 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:27:01 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:27:02 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:27:03 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:35:44 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'ativo' in 'where clause' in /home/josdevco/public_html/info/cadastro_aluno.php:88
+Stack trace:
+#0 /home/josdevco/public_html/info/cadastro_aluno.php(88): mysqli->query('SELECT id, nome...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/cadastro_aluno.php on line 88
+[15-Sep-2025 14:35:53 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'ativo' in 'where clause' in /home/josdevco/public_html/info/cadastro_aluno.php:88
+Stack trace:
+#0 /home/josdevco/public_html/info/cadastro_aluno.php(88): mysqli->query('SELECT id, nome...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/cadastro_aluno.php on line 88
+[15-Sep-2025 14:45:42 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'ativo' in 'where clause' in /home/josdevco/public_html/info/cadastro_aluno.php:99
+Stack trace:
+#0 /home/josdevco/public_html/info/cadastro_aluno.php(99): mysqli->query('SELECT id, nome...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/cadastro_aluno.php on line 99
+[15-Sep-2025 14:49:50 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:40
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(40): mysqli->prepare('\r\n    SELECT CO...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 40
+[15-Sep-2025 14:53:41 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'atividade_id' in 'field list' in /home/josdevco/public_html/info/dashboard_aluno.php:63
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(63): mysqli->prepare('\n    SELECT COU...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 63
+[15-Sep-2025 14:55:28 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'aluno_id' in 'where clause' in /home/josdevco/public_html/info/dashboard_aluno.php:63
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(63): mysqli->prepare('\n    SELECT COU...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 63
+[15-Sep-2025 14:56:08 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'aluno_id' in 'where clause' in /home/josdevco/public_html/info/dashboard_aluno.php:63
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(63): mysqli->prepare('\n    SELECT COU...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 63
+[15-Sep-2025 14:56:09 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'aluno_id' in 'where clause' in /home/josdevco/public_html/info/dashboard_aluno.php:63
+Stack trace:
+#0 /home/josdevco/public_html/info/dashboard_aluno.php(63): mysqli->prepare('\n    SELECT COU...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/dashboard_aluno.php on line 63
+[16-Sep-2025 00:07:34 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/notas_faltas.php on line 4
+[16-Sep-2025 00:07:34 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/notas_faltas.php on line 5
+[16-Sep-2025 13:57:12 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function getFileIcon() in /home/josdevco/public_html/info/documentos.php:363
+Stack trace:
+#0 {main}
+  thrown in /home/josdevco/public_html/info/documentos.php on line 363
+[16-Sep-2025 13:57:22 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function getFileIcon() in /home/josdevco/public_html/info/documentos.php:363
+Stack trace:
+#0 {main}
+  thrown in /home/josdevco/public_html/info/documentos.php on line 363
+[16-Sep-2025 14:40:51 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/enviar_resposta.php on line 4
+[16-Sep-2025 14:40:51 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/enviar_resposta.php on line 5
+[16-Sep-2025 14:40:51 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 in /home/josdevco/public_html/info/enviar_resposta.php:9
+Stack trace:
+#0 /home/josdevco/public_html/info/enviar_resposta.php(9): mysqli->query('SELECT id FROM ...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/enviar_resposta.php on line 9
+[16-Sep-2025 20:41:50 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/atividades.php on line 4
+[16-Sep-2025 20:41:50 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/atividades.php on line 5
+[17-Sep-2025 01:27:23 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/relatorio_frequencia.php on line 6
+[17-Sep-2025 16:58:28 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/atividades.php on line 4
+[17-Sep-2025 16:58:28 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/atividades.php on line 5
+[18-Sep-2025 00:25:20 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/dashboard_admin.php on line 4
+[18-Sep-2025 00:25:21 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/dashboard_admin.php on line 66
+[18-Sep-2025 00:25:21 UTC] PHP Warning:  Undefined array key "nome" in /home/josdevco/public_html/info/dashboard_admin.php on line 144
+[18-Sep-2025 00:25:21 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/josdevco/public_html/info/dashboard_admin.php on line 144
+[18-Sep-2025 10:14:39 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/atividades.php on line 4
+[18-Sep-2025 10:14:39 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/atividades.php on line 5
+[19-Sep-2025 01:04:05 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/funcoes.php:110
+Stack trace:
+#0 /home/josdevco/public_html/info/funcoes.php(110): mysqli_stmt->execute()
+#1 /home/josdevco/public_html/info/dashboard_admin.php(21): criar_notificacao(Object(mysqli), 1, 'professor', 'Turma Finalizad...', 'A turma 'ELT19'...', 'info')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/funcoes.php on line 110
+[19-Sep-2025 01:08:44 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/dashboard_professor.php on line 4
+[19-Sep-2025 01:08:44 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/dashboard_professor.php on line 6
+[19-Sep-2025 01:08:44 UTC] PHP Warning:  Undefined array key "usuario" in /home/josdevco/public_html/info/dashboard_professor.php on line 45
+[19-Sep-2025 01:08:44 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/josdevco/public_html/info/dashboard_professor.php on line 45
+[19-Sep-2025 01:21:35 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/notas_faltas.php on line 4
+[19-Sep-2025 01:21:35 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/notas_faltas.php on line 5
+[19-Sep-2025 01:28:36 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/atividades.php on line 4
+[19-Sep-2025 01:28:36 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/atividades.php on line 5
+[19-Sep-2025 15:42:53 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/notas_faltas.php on line 4
+[19-Sep-2025 15:42:53 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/notas_faltas.php on line 5
+[22-Sep-2025 19:44:38 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/notas_faltas.php on line 4
+[22-Sep-2025 19:44:38 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/notas_faltas.php on line 5
+[23-Sep-2025 20:48:09 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/atividades.php on line 4
+[23-Sep-2025 20:48:09 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/atividades.php on line 5
+[25-Sep-2025 17:17:05 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/notas_faltas.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[25-Sep-2025 17:17:07 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/notas_faltas.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[25-Sep-2025 17:17:17 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/notas_faltas.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[25-Sep-2025 17:17:18 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/dashboard_admin.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[25-Sep-2025 17:17:19 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/dashboard_admin.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[25-Sep-2025 17:17:20 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/dashboard_admin.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[25-Sep-2025 17:17:21 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/dashboard_admin.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[25-Sep-2025 17:17:22 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/dashboard_admin.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[25-Sep-2025 17:17:24 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: No such file or directory in /home/josdevco/public_html/info/conexao.php:8
+Stack trace:
+#0 /home/josdevco/public_html/info/conexao.php(8): mysqli->__construct('localhost', 'josdevco_info', Object(SensitiveParameterValue), 'josdevco_info')
+#1 /home/josdevco/public_html/info/dashboard_admin.php(3): include('/home/josdevco/...')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/conexao.php on line 8
+[28-Sep-2025 00:19:02 UTC] PHP Warning:  Undefined array key "tipo" in /home/josdevco/public_html/info/atividades.php on line 4
+[28-Sep-2025 00:19:02 UTC] PHP Warning:  Undefined array key "id" in /home/josdevco/public_html/info/atividades.php on line 5
+[30-Sep-2025 15:54:19 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/funcoes.php:110
+Stack trace:
+#0 /home/josdevco/public_html/info/funcoes.php(110): mysqli_stmt->execute()
+#1 /home/josdevco/public_html/info/dashboard_admin.php(21): criar_notificacao(Object(mysqli), 1, 'professor', 'Turma Finalizad...', 'A turma 'ELT19'...', 'info')
+#2 {main}
+  thrown in /home/josdevco/public_html/info/funcoes.php on line 110
+[30-Sep-2025 16:42:28 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/cadastro_turma.php:11
+Stack trace:
+#0 /home/josdevco/public_html/info/cadastro_turma.php(11): mysqli->query('INSERT INTO tur...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/cadastro_turma.php on line 11
+[30-Sep-2025 16:42:32 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/cadastro_turma.php:11
+Stack trace:
+#0 /home/josdevco/public_html/info/cadastro_turma.php(11): mysqli->query('INSERT INTO tur...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/cadastro_turma.php on line 11
+[30-Sep-2025 16:42:55 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/cadastro_turma.php:11
+Stack trace:
+#0 /home/josdevco/public_html/info/cadastro_turma.php(11): mysqli->query('INSERT INTO tur...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/cadastro_turma.php on line 11
+[30-Sep-2025 16:43:12 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/cadastro_turma.php:11
+Stack trace:
+#0 /home/josdevco/public_html/info/cadastro_turma.php(11): mysqli->query('INSERT INTO tur...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/cadastro_turma.php on line 11
+[30-Sep-2025 16:43:15 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0' for key 'PRIMARY' in /home/josdevco/public_html/info/cadastro_turma.php:11
+Stack trace:
+#0 /home/josdevco/public_html/info/cadastro_turma.php(11): mysqli->query('INSERT INTO tur...')
+#1 {main}
+  thrown in /home/josdevco/public_html/info/cadastro_turma.php on line 11

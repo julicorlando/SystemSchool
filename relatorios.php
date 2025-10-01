@@ -2,6 +2,13 @@
 session_start();
 include "conexao.php";
 
+// Função para verificar permissão
+if (!function_exists('verificar_permissao')) {
+    function verificar_permissao($tipo, $permitidos) {
+        return in_array($tipo, $permitidos);
+    }
+}
+
 // Verificar permissões
 if (!verificar_permissao($_SESSION['tipo'], ['admin', 'professor'])) {
     header("Location: index.php");
@@ -11,29 +18,34 @@ if (!verificar_permissao($_SESSION['tipo'], ['admin', 'professor'])) {
 $tipo_usuario = $_SESSION['tipo'];
 $id_usuario = $_SESSION['id'];
 
-// Função para buscar estatísticas gerais
+// Função para buscar estatísticas gerais (com tratamento de erro)
 function obter_estatisticas_gerais($conn, $professor_id = null) {
     $where_professor = $professor_id ? "AND t.professor_id = $professor_id" : "";
-    
+    $where_professor_turmas = $professor_id ? "AND professor_id = $professor_id" : "";
+
     $stats = [];
-    
+
     // Total de alunos
     $result = $conn->query("SELECT COUNT(*) as total FROM alunos a JOIN turmas t ON a.turma_id = t.id WHERE 1=1 $where_professor");
+    if ($result === false) { die("Erro SQL (total alunos): " . $conn->error); }
     $stats['total_alunos'] = $result->fetch_assoc()['total'];
-    
-    // Total de turmas
-    $result = $conn->query("SELECT COUNT(*) as total FROM turmas WHERE 1=1 $where_professor");
+
+    // Total de turmas (ajuste de alias)
+    $result = $conn->query("SELECT COUNT(*) as total FROM turmas WHERE 1=1 $where_professor_turmas");
+    if ($result === false) { die("Erro SQL (total turmas): " . $conn->error); }
     $stats['total_turmas'] = $result->fetch_assoc()['total'];
-    
+
     // Turmas ativas
-    $result = $conn->query("SELECT COUNT(*) as total FROM turmas WHERE finalizada = 0 $where_professor");
+    $result = $conn->query("SELECT COUNT(*) as total FROM turmas WHERE finalizada = 0 $where_professor_turmas");
+    if ($result === false) { die("Erro SQL (turmas ativas): " . $conn->error); }
     $stats['turmas_ativas'] = $result->fetch_assoc()['total'];
-    
+
     // Média geral de notas
     $result = $conn->query("SELECT AVG(media) as media_geral FROM notas_faltas nf JOIN alunos a ON nf.aluno_id = a.id JOIN turmas t ON a.turma_id = t.id WHERE nf.media IS NOT NULL $where_professor");
+    if ($result === false) { die("Erro SQL (media geral): " . $conn->error); }
     $row = $result->fetch_assoc();
     $stats['media_geral'] = $row['media_geral'] ? round($row['media_geral'], 2) : 0;
-    
+
     // Taxa de aprovação
     $result = $conn->query("
         SELECT 
@@ -44,9 +56,10 @@ function obter_estatisticas_gerais($conn, $professor_id = null) {
         JOIN turmas t ON a.turma_id = t.id 
         WHERE nf.media IS NOT NULL AND nf.faltas IS NOT NULL $where_professor
     ");
+    if ($result === false) { die("Erro SQL (taxa aprovacao): " . $conn->error); }
     $row = $result->fetch_assoc();
     $stats['taxa_aprovacao'] = $row['total_avaliados'] > 0 ? round(($row['aprovados'] / $row['total_avaliados']) * 100, 1) : 0;
-    
+
     // Frequência média
     $result = $conn->query("
         SELECT AVG(
@@ -66,23 +79,23 @@ function obter_estatisticas_gerais($conn, $professor_id = null) {
             GROUP BY a.id
         ) as freq_stats
     ");
+    if ($result === false) { die("Erro SQL (frequencia media): " . $conn->error); }
     $row = $result->fetch_assoc();
     $stats['frequencia_media'] = $row['frequencia_media'] ? round($row['frequencia_media'], 1) : 0;
-    
+
     return $stats;
 }
 
 // Função para obter dados de desempenho por turma
 function obter_desempenho_turmas($conn, $professor_id = null) {
     $where_professor = $professor_id ? "AND t.professor_id = $professor_id" : "";
-    
     $sql = "
         SELECT 
             t.nome as turma,
             COUNT(DISTINCT a.id) as total_alunos,
             AVG(nf.media) as media_turma,
             SUM(CASE WHEN nf.media >= 7 AND nf.faltas < 4 THEN 1 ELSE 0 END) as aprovados,
-            COUNT(nf.id) as avaliados,
+            COUNT(nf.aluno_id) as avaliados,
             AVG(CASE WHEN freq.total_registros > 0 THEN (freq.presencas / freq.total_registros) * 100 ELSE 0 END) as frequencia_media
         FROM turmas t
         LEFT JOIN alunos a ON t.id = a.turma_id
@@ -99,14 +112,14 @@ function obter_desempenho_turmas($conn, $professor_id = null) {
         GROUP BY t.id, t.nome
         ORDER BY t.nome
     ";
-    
-    return $conn->query($sql);
+    $result = $conn->query($sql);
+    if ($result === false) { die("Erro SQL (desempenho turmas): " . $conn->error); }
+    return $result;
 }
 
 // Função para obter alunos com baixo desempenho
 function obter_alunos_risco($conn, $professor_id = null) {
     $where_professor = $professor_id ? "AND t.professor_id = $professor_id" : "";
-    
     $sql = "
         SELECT 
             a.nome as aluno,
@@ -126,8 +139,9 @@ function obter_alunos_risco($conn, $professor_id = null) {
         WHERE (nf.media < 7 OR nf.faltas >= 3) $where_professor
         ORDER BY nf.media ASC, nf.faltas DESC
     ";
-    
-    return $conn->query($sql);
+    $result = $conn->query($sql);
+    if ($result === false) { die("Erro SQL (alunos risco): " . $conn->error); }
+    return $result;
 }
 
 // Buscar dados
@@ -164,121 +178,34 @@ if ($desempenho_turmas && $desempenho_turmas->num_rows > 0) {
             gap: 20px;
             margin: 20px 0;
         }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-card.success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        
-        .stat-card.warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        
-        .stat-card.info {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
-        
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            display: block;
-        }
-        
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-        
-        .chart-container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin: 20px 0;
-        }
-        
-        .chart-wrapper {
-            position: relative;
-            height: 400px;
-        }
-        
+        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card.success { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stat-card.warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stat-card.info { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .stat-number { font-size: 2.5em; font-weight: bold; display: block; }
+        .stat-label { font-size: 0.9em; opacity: 0.9; margin-top: 5px; }
+        .chart-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 20px 0; }
+        .chart-wrapper { position: relative; height: 400px; }
         .reports-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin: 20px 0;
         }
-        
-        .report-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .risk-student {
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-            border-left: 4px solid;
-        }
-        
-        .risk-high {
-            background: #fff5f5;
-            border-left-color: #f56565;
-        }
-        
-        .risk-medium {
-            background: #fffbf0;
-            border-left-color: #ed8936;
-        }
-        
-        .risk-low {
-            background: #f0fff4;
-            border-left-color: #48bb78;
-        }
-        
-        .export-buttons {
-            margin: 20px 0;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn-export {
-            background: #4299e1;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background 0.3s;
-        }
-        
-        .btn-export:hover {
-            background: #3182ce;
-        }
+        .report-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .risk-student { padding: 10px; margin: 5px 0; border-radius: 5px; border-left: 4px solid; }
+        .risk-high { background: #fff5f5; border-left-color: #f56565; }
+        .risk-medium { background: #fffbf0; border-left-color: #ed8936; }
+        .risk-low { background: #f0fff4; border-left-color: #48bb78; }
+        .export-buttons { margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-export { background: #4299e1; color: white; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; font-weight: 500; transition: background 0.3s; }
+        .btn-export:hover { background: #3182ce; }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Relatórios e Dashboard</h1>
-    
     <!-- Estatísticas Gerais -->
     <h2>Visão Geral</h2>
     <div class="stats-grid">
@@ -307,7 +234,6 @@ if ($desempenho_turmas && $desempenho_turmas->num_rows > 0) {
             <span class="stat-label">Turmas Ativas</span>
         </div>
     </div>
-    
     <!-- Gráficos -->
     <?php if (!empty($dados_grafico_turmas)): ?>
     <div class="chart-container">
@@ -316,7 +242,6 @@ if ($desempenho_turmas && $desempenho_turmas->num_rows > 0) {
             <canvas id="graficoDesempenho"></canvas>
         </div>
     </div>
-    
     <div class="chart-container">
         <h3>Frequência por Turma</h3>
         <div class="chart-wrapper">
@@ -324,7 +249,6 @@ if ($desempenho_turmas && $desempenho_turmas->num_rows > 0) {
         </div>
     </div>
     <?php endif; ?>
-    
     <!-- Relatórios Detalhados -->
     <div class="reports-grid">
         <!-- Desempenho por Turma -->
@@ -348,7 +272,6 @@ if ($desempenho_turmas && $desempenho_turmas->num_rows > 0) {
                 <p>Nenhum dado disponível.</p>
             <?php endif; ?>
         </div>
-        
         <!-- Alunos em Risco -->
         <div class="report-card">
             <h3>Alunos em Risco</h3>
@@ -377,7 +300,6 @@ if ($desempenho_turmas && $desempenho_turmas->num_rows > 0) {
             <?php endif; ?>
         </div>
     </div>
-    
     <!-- Botões de Exportação -->
     <div class="export-buttons">
         <a href="relatorio_frequencia.php" class="btn-export">Relatório de Frequência</a>
@@ -385,18 +307,15 @@ if ($desempenho_turmas && $desempenho_turmas->num_rows > 0) {
         <a href="?export=pdf" class="btn-export">Exportar PDF</a>
         <a href="?export=excel" class="btn-export">Exportar Excel</a>
     </div>
-    
     <div style="margin-top: 30px;">
         <a href="<?= $tipo_usuario === 'admin' ? 'dashboard_admin.php' : 'dashboard_professor.php' ?>">
             <button>Voltar ao Dashboard</button>
         </a>
     </div>
 </div>
-
 <script>
 // Dados para os gráficos
 const dadosTurmas = <?= json_encode($dados_grafico_turmas) ?>;
-
 // Gráfico de Desempenho
 if (document.getElementById('graficoDesempenho') && dadosTurmas.length > 0) {
     const ctx1 = document.getElementById('graficoDesempenho').getContext('2d');
@@ -458,7 +377,6 @@ if (document.getElementById('graficoDesempenho') && dadosTurmas.length > 0) {
         }
     });
 }
-
 // Gráfico de Frequência
 if (document.getElementById('graficoFrequencia') && dadosTurmas.length > 0) {
     const ctx2 = document.getElementById('graficoFrequencia').getContext('2d');

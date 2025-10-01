@@ -141,7 +141,7 @@ $notificacoes_nao_lidas = contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h1>Painel do Administrador</h1>
         <div>
-            <span>Bem-vindo, <?= htmlspecialchars($_SESSION['nome'] ?? $_SESSION['usuario']) ?>!</span>
+            <span>Bem-vindo, <?= htmlspecialchars($_SESSION['nome']) ?>!</span>
             <?php if ($notificacoes_nao_lidas > 0): ?>
                 <span class="notification-badge"><?= $notificacoes_nao_lidas ?></span>
             <?php endif; ?>
@@ -181,7 +181,7 @@ $notificacoes_nao_lidas = contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 
         <a href="comunicacao.php"><button>Comunicação</button></a>
         <a href="calendario.php"><button>Calendário Escolar</button></a>
         <a href="financeiro.php"><button>Módulo Financeiro</button></a>
-        <a href="atividades.php"><button>Atividades</button></a>
+        <a href="atividades.php"><button>Atividades / Conteúdos</button></a>
         <a href="documentos.php"><button>Documentos</button></a>
     </div>
 

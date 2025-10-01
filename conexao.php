@@ -1,11 +1,11 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "escola";
+$host = 'localhost';
+$user = 'josdevco_info';
+$pass = 'Bento121021@';
+$db_name = 'josdevco_info'; // CORREÇÃO: ponto-e-vírgula no final
 
 // Configurações de segurança
-$conn = new mysqli($host, $user, $pass, $db);
+$conn = new mysqli($host, $user, $pass, $db_name); // CORREÇÃO: $db_name no lugar de $db
 
 // Verificar conexão
 if ($conn->connect_error) {

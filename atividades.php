@@ -4,12 +4,6 @@ include "conexao.php";
 $tipo = $_SESSION['tipo'];
 $id = $_SESSION['id'];
 
-// Função para verificar se turma está finalizada
-function turma_finalizada($conn, $turma_id) {
-    $res = $conn->query("SELECT finalizada FROM turmas WHERE id=$turma_id")->fetch_assoc();
-    return !empty($res) && $res['finalizada'] == 1;
-}
-
 // PROFESSOR envia atividade em PDF
 if($tipo == "professor" && isset($_POST['turma_id']) && isset($_POST['titulo']) && isset($_FILES['pdf'])) {
     $turma_id = intval($_POST['turma_id']);
