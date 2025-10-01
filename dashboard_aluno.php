@@ -53,6 +53,16 @@ $stmt->execute();
 $notas_faltas = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
+// Verifica notas pendentes
+$notas_pendentes = false;
+$pendentes = [];
+if (!$notas_faltas || $notas_faltas['nota1'] === null || $notas_faltas['nota2'] === null || $notas_faltas['media'] === null) {
+    $notas_pendentes = true;
+    if (!$notas_faltas || $notas_faltas['nota1'] === null) $pendentes[] = "Nota 1";
+    if (!$notas_faltas || $notas_faltas['nota2'] === null) $pendentes[] = "Nota 2";
+    if (!$notas_faltas || $notas_faltas['media'] === null) $pendentes[] = "Média";
+}
+
 // CONTABILIZAÇÃO DAS FALTAS DIRETO NA TABELA FREQUENCIA
 // Cada registro presente=0 é uma falta
 $stmt = $conn->prepare("SELECT COUNT(*) AS faltas FROM frequencia WHERE aluno_id = ? AND presente = 0");
@@ -64,7 +74,7 @@ $faltas = $faltas_result['faltas'] ?? 0;
 
 // Status acadêmico
 $status = "-";
-if ($notas_faltas) {
+if ($notas_faltas && !$notas_pendentes) {
     $media = $notas_faltas['media'];
     if ($faltas >= 4) {
         $status = "Reprovado por faltas";
@@ -177,10 +187,22 @@ $stats['frequencia_total'] = $freq_total['total_dias'] > 0 ? round(($freq_total[
                 <div class="col-6">
                     <p><strong>Matrícula:</strong> <?= htmlspecialchars($aluno_dados['matricula']) ?></p>
                     <p><strong>Turma:</strong> <?= htmlspecialchars($aluno_dados['turma_nome']) ?></p>
+                    <p><strong>Nota 1:</strong> <?= isset($notas_faltas['nota1']) ? $notas_faltas['nota1'] : '-' ?></p>
+                    <p><strong>Nota 2:</strong> <?= isset($notas_faltas['nota2']) ? $notas_faltas['nota2'] : '-' ?></p>
                 </div>
                 <div class="col-6">
                     <p><strong>Média:</strong> <?= $notas_faltas['media'] ?? '-' ?></p>
-                    <p><strong>Status:</strong> <span class="<?= $status === 'Aprovado' ? 'text-success' : ($status === 'Reprovado' || $status === 'Reprovado por faltas' ? 'text-danger' : 'text-warning') ?>"><?= $status ?></span></p>
+                    <p><strong>Status:</strong>
+                        <span class="<?= $status === 'Aprovado' ? 'text-success' : ($status === 'Reprovado' || $status === 'Reprovado por faltas' ? 'text-danger' : 'text-warning') ?>">
+                            <?= $status ?>
+                        </span>
+                    </p>
+                    <?php if ($notas_pendentes): ?>
+                        <div class="msg-erro" style="margin-top:8px;">
+                            <strong>Notas pendentes:</strong> <?= implode(", ", $pendentes) ?>.
+                            Aguarde o professor lançar todas as notas.
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

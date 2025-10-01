@@ -230,7 +230,7 @@ $notificacoes_nao_lidas = function_exists('contar_notificacoes_nao_lidas')
                 <th>Professor</th>
                 <th>Alunos</th>
                 <th>Status</th>
-                <th>Cadastro de Aluno pelo Professor</th>
+                <th>C.A.P.</th>
                 <th>Ação</th>
             </tr>
             <?php if ($turmas && $turmas->num_rows > 0): ?>
@@ -247,11 +247,11 @@ $notificacoes_nao_lidas = function_exists('contar_notificacoes_nao_lidas')
                         </td>
                         <td>
                             <?php if (!$t['professor_pode_cadastrar']): ?>
-                                <a href="?liberar_cadastro_professor=<?= $t['id'] ?>"><button>Liberar</button></a>
-                                <span style="color:red;">Bloqueado</span>
+                                <a href="?liberar_cadastro_professor=<?= $t['id'] ?>"><button>L</button></a>
+                                <span style="color:red;">OFF</span>
                             <?php else: ?>
-                                <span style="color:green;">Liberado</span>
-                                <a href="?bloquear_cadastro_professor=<?= $t['id'] ?>"><button>Bloquear</button></a>
+                                <span style="color:green;">ON</span>
+                                <a href="?bloquear_cadastro_professor=<?= $t['id'] ?>"><button>B</button></a>
                             <?php endif; ?>
                         </td>
                         <td>

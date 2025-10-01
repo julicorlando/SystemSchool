@@ -7,7 +7,7 @@ body {
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f4f6f8;
-    color: #222; /* Letras pretas */
+    color: #222;
     line-height: 1.65;
 }
 
@@ -16,7 +16,7 @@ body {
     max-width: 1200px;
     margin: auto;
     background: #fff;
-    color: #111; /* Letras pretas */
+    color: #111;
     padding: 36px 28px;
     box-shadow: 0 2px 12px rgba(50, 50, 50, 0.04);
     border-radius: 12px;
@@ -27,7 +27,7 @@ body {
 
 /* Tipografia */
 h1, h2, h3, h4, h5, h6 {
-    color: #111; /* Letras pretas */
+    color: #111;
     font-weight: 500;
     margin-top: 0;
     margin-bottom: 1rem;
@@ -39,7 +39,7 @@ h3 { font-size: 1.6rem; }
 
 p {
     margin-bottom: 1rem;
-    color: #222; /* Letras pretas */
+    color: #222;
 }
 
 /* Formulários */
@@ -51,7 +51,7 @@ input, select, button, textarea {
     border: 1px solid #bdc4cc;
     font-size: 1em;
     background: #f7f9fa;
-    color: #111; /* Letras pretas */
+    color: #111;
     box-sizing: border-box;
     font-family: inherit;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -62,13 +62,13 @@ input:focus, select:focus, textarea:focus {
     border-color: #7f8c98;
     box-shadow: 0 0 0 3px rgba(127, 140, 152, 0.10);
     background: #fff;
-    color: #000; /* letras pretas */
+    color: #000;
 }
 
 /* Botões */
 button, .btn {
     background: #e7eaed;
-    color: #111; /* Letras pretas */
+    color: #111;
     border: none;
     cursor: pointer;
     font-weight: 600;
@@ -81,7 +81,7 @@ button, .btn {
 
 button:hover, .btn:hover {
     background: #cfd6db;
-    color: #111; /* Letras pretas */
+    color: #111;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(50, 50, 50, 0.07);
 }
@@ -90,7 +90,7 @@ button:active, .btn:active {
     transform: translateY(0);
 }
 
-/* Variações de botões */
+/* Botões principais */
 .btn-primary {
     background: #a3b1c2;
     color: #fff;
@@ -103,7 +103,7 @@ button:active, .btn:active {
 
 .btn-success {
     background: #c3d1c5;
-    color: #222; /* letras pretas */
+    color: #222;
 }
 
 .btn-success:hover {
@@ -144,7 +144,7 @@ button:active, .btn:active {
 /* Links */
 a {
     text-decoration: none;
-    color: #222; /* Letras pretas */
+    color: #222;
 }
 
 a:hover {
@@ -158,7 +158,7 @@ table {
     border-collapse: collapse;
     margin: 22px 0;
     background: #fbfbfc;
-    color: #111; /* Letras pretas */
+    color: #111;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(50, 50, 50, 0.06);
@@ -168,13 +168,13 @@ th, td {
     padding: 14px 16px;
     border-bottom: 1px solid #e5e7ea;
     text-align: left;
-    color: #222; /* Letras pretas */
+    color: #222;
 }
 
 th {
     background: #eceff1;
     font-weight: 600;
-    color: #111; /* Letras pretas */
+    color: #111;
     border-bottom: 2px solid #d6dae1;
 }
 
@@ -189,7 +189,7 @@ tr:last-child td {
 /* Cards */
 .card {
     background: #fff;
-    color: #111; /* Letras pretas */
+    color: #111;
     border-radius: 10px;
     box-shadow: 0 2px 7px rgba(50, 50, 50, 0.07);
     margin-bottom: 1rem;
@@ -199,20 +199,20 @@ tr:last-child td {
 .card-header {
     padding: 1rem 1.25rem;
     background: #eceff1;
-    color: #222; /* Letras pretas */
+    color: #222;
     border-bottom: 1px solid #d6dae1;
     font-weight: 600;
 }
 
 .card-body {
     padding: 1.25rem;
-    color: #222; /* Letras pretas */
+    color: #222;
 }
 
 .card-footer {
     padding: 1rem 1.25rem;
     background: #eceff1;
-    color: #222; /* Letras pretas */
+    color: #222;
     border-top: 1px solid #d6dae1;
 }
 
@@ -222,7 +222,7 @@ tr:last-child td {
     border-radius: 8px;
     margin: 17px 0;
     border: 1px solid transparent;
-    color: #222; /* Letras pretas */
+    color: #222;
 }
 
 .alert-success {
@@ -280,7 +280,7 @@ tr:last-child td {
 .nav-tab {
     padding: 0.75rem 1.5rem;
     background: #eceff1;
-    color: #222; /* Letras pretas */
+    color: #222;
     border: none;
     cursor: pointer;
     text-decoration: none;
@@ -309,7 +309,7 @@ tr:last-child td {
 
 .dashboard-card {
     background: #f4f6f8;
-    color: #222; /* Letras pretas */
+    color: #222;
     padding: 22px;
     border-radius: 10px;
     border-left: 4px solid #a3b1c2;
@@ -324,7 +324,7 @@ tr:last-child td {
 
 .dashboard-card h3 {
     margin: 0 0 10px 0;
-    color: #111; /* Letras pretas */
+    color: #111;
 }
 
 .dashboard-card .number {
