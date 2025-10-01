@@ -44,11 +44,15 @@ if($tipo == "admin") {
     }
 }
 
-// PROFESSOR: lista alunos da(s) sua(s) turma(s)
+// PROFESSOR: filtro por turma e lista alunos da turma selecionada
 if($tipo == "professor") {
-    $alunos = $conn->query("SELECT a.id, a.nome, t.nome as turma, t.id as turma_id 
-        FROM alunos a JOIN turmas t ON t.id=a.turma_id 
-        WHERE t.professor_id=$id ORDER BY a.nome ASC");
+    $turmas = $conn->query("SELECT id, nome FROM turmas WHERE professor_id=$id ORDER BY nome ASC");
+    $turma_id = isset($_GET['turma_id']) ? intval($_GET['turma_id']) : null;
+    if($turma_id) {
+        $alunos = $conn->query("SELECT a.id, a.nome, t.nome as turma, t.id as turma_id 
+            FROM alunos a JOIN turmas t ON t.id=a.turma_id 
+            WHERE t.professor_id=$id AND t.id=$turma_id ORDER BY a.nome ASC");
+    }
 }
 
 // ALUNO: ver suas notas e faltas
@@ -107,8 +111,9 @@ if($tipo == "aluno") {
                 <option value="">Selecione...</option>
                 <?php 
                 if ($turmas) {
+                    $selectedTurma = $_GET['turma_id'] ?? '';
                     while($t = $turmas->fetch_assoc()) { ?>
-                        <option value="<?=$t['id']?>" <?=($turma_id==$t['id']?'selected':'')?>><?=htmlspecialchars($t['nome'])?></option>
+                        <option value="<?=$t['id']?>" <?=($selectedTurma==$t['id']?'selected':'')?>><?=htmlspecialchars($t['nome'])?></option>
                 <?php } } ?>
             </select>
         </form>
@@ -163,6 +168,19 @@ if($tipo == "aluno") {
     <?php } ?>
 
     <?php if($tipo == "professor") { ?>
+        <form method="get">
+            <label>Selecione a Turma</label>
+            <select name="turma_id" onchange="this.form.submit()">
+                <option value="">Selecione...</option>
+                <?php 
+                if ($turmas) {
+                    $selectedTurma = $_GET['turma_id'] ?? '';
+                    while($t = $turmas->fetch_assoc()) { ?>
+                        <option value="<?=$t['id']?>" <?=($selectedTurma==$t['id']?'selected':'')?>><?=htmlspecialchars($t['nome'])?></option>
+                <?php } } ?>
+            </select>
+        </form>
+        <?php if(isset($alunos)) { ?>
         <table>
             <tr><th>Aluno</th><th>Turma</th><th>Nota 1</th><th>Nota 2</th><th>Média</th><th>Faltas</th><th>Status</th><th>Ações</th></tr>
             <?php while($a = $alunos->fetch_assoc()) {
@@ -208,6 +226,7 @@ if($tipo == "aluno") {
             </form>
             <?php } ?>
         </table>
+        <?php } ?>
     <?php } ?>
 
     <?php if($tipo == "aluno") { ?>

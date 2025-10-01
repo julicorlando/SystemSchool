@@ -160,4 +160,5 @@ function deletar_arquivo($caminho) {
     }
     return false;
 }
+
 ?>

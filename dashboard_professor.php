@@ -82,6 +82,7 @@ $stats['atividades'] = $result->get_result()->fetch_assoc()['total'];
         </button></a>
         <a href="calendario.php"><button>Calendário Escolar</button></a>
         <a href="relatorios.php"><button>Relatórios</button></a>
+        <a href="cadastro_aluno_professor.php"><button>Cadastrar Alunos</button></a>
     </div>
     
     <div style="margin-top: 30px;">

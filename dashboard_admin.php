@@ -1,7 +1,27 @@
 <?php
 session_start();
 include "conexao.php";
-if($_SESSION['tipo'] !== "admin") header("Location: index.php");
+include_once "funcoes.php";
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+if ($_SESSION['tipo'] !== "admin") {
+    header("Location: index.php");
+    exit;
+}
+
+// LIBERAR/BLOQUEAR cadastro de alunos por professor
+if (isset($_GET['liberar_cadastro_professor'])) {
+    $id = intval($_GET['liberar_cadastro_professor']);
+    $conn->query("UPDATE turmas SET professor_pode_cadastrar=1 WHERE id=$id");
+    header("Location: dashboard_admin.php");
+    exit;
+}
+if (isset($_GET['bloquear_cadastro_professor'])) {
+    $id = intval($_GET['bloquear_cadastro_professor']);
+    $conn->query("UPDATE turmas SET professor_pode_cadastrar=0 WHERE id=$id");
+    header("Location: dashboard_admin.php");
+    exit;
+}
 
 // Finalizar turma
 if(isset($_GET['finalizar'])) {
@@ -9,32 +29,42 @@ if(isset($_GET['finalizar'])) {
     $stmt = $conn->prepare("UPDATE turmas SET finalizada=1 WHERE id=?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    
+
     // Criar notificação para professores e alunos da turma
     $turma_info = $conn->prepare("SELECT nome, professor_id FROM turmas WHERE id=?");
     $turma_info->bind_param("i", $id);
     $turma_info->execute();
     $turma = $turma_info->get_result()->fetch_assoc();
-    
+
     if ($turma) {
-        // Notificar professor
-        criar_notificacao($conn, $turma['professor_id'], 'professor', 
-            'Turma Finalizada', 
-            "A turma '{$turma['nome']}' foi finalizada.", 'info');
-        
-        // Notificar alunos
+        if (function_exists('criar_notificacao')) {
+            criar_notificacao(
+                $conn,
+                $turma['professor_id'],
+                'professor',
+                'Turma Finalizada',
+                "A turma '{$turma['nome']}' foi finalizada.",
+                'info'
+            );
+        }
         $alunos = $conn->prepare("SELECT id FROM alunos WHERE turma_id=?");
         $alunos->bind_param("i", $id);
         $alunos->execute();
         $resultado_alunos = $alunos->get_result();
-        
+
         while ($aluno = $resultado_alunos->fetch_assoc()) {
-            criar_notificacao($conn, $aluno['id'], 'aluno', 
-                'Turma Finalizada', 
-                "Sua turma '{$turma['nome']}' foi finalizada.", 'info');
+            if (function_exists('criar_notificacao')) {
+                criar_notificacao(
+                    $conn,
+                    $aluno['id'],
+                    'aluno',
+                    'Turma Finalizada',
+                    "Sua turma '{$turma['nome']}' foi finalizada.",
+                    'info'
+                );
+            }
         }
     }
-    
     header("Location: dashboard_admin.php");
     exit;
 }
@@ -51,19 +81,23 @@ if(isset($_GET['reabrir'])) {
 
 // Estatísticas básicas
 $stats = [];
-$stats['total_alunos'] = $conn->query("SELECT COUNT(*) as total FROM alunos")->fetch_assoc()['total'];
-$stats['total_professores'] = $conn->query("SELECT COUNT(*) as total FROM professores")->fetch_assoc()['total'];
-$stats['total_turmas'] = $conn->query("SELECT COUNT(*) as total FROM turmas")->fetch_assoc()['total'];
-$stats['turmas_ativas'] = $conn->query("SELECT COUNT(*) as total FROM turmas WHERE finalizada=0")->fetch_assoc()['total'];
+$stats['total_alunos'] = $conn->query("SELECT COUNT(*) as total FROM alunos")->fetch_assoc()['total'] ?? 0;
+$stats['total_professores'] = $conn->query("SELECT COUNT(*) as total FROM professores")->fetch_assoc()['total'] ?? 0;
+$stats['total_turmas'] = $conn->query("SELECT COUNT(*) as total FROM turmas")->fetch_assoc()['total'] ?? 0;
+$stats['turmas_ativas'] = $conn->query("SELECT COUNT(*) as total FROM turmas WHERE finalizada=0")->fetch_assoc()['total'] ?? 0;
 
 // Listar turmas
-$turmas = $conn->query("SELECT t.id, t.nome, t.turno, p.nome as professor, t.finalizada,
-                              (SELECT COUNT(*) FROM alunos a WHERE a.turma_id = t.id) as total_alunos
-                        FROM turmas t LEFT JOIN professores p ON p.id=t.professor_id
-                        ORDER BY t.finalizada ASC, t.nome ASC");
+$turmas = $conn->query(
+    "SELECT t.id, t.nome, t.turno, p.nome as professor, t.finalizada, t.professor_pode_cadastrar,
+    (SELECT COUNT(*) FROM alunos a WHERE a.turma_id = t.id) as total_alunos
+    FROM turmas t LEFT JOIN professores p ON p.id=t.professor_id
+    ORDER BY t.finalizada ASC, t.nome ASC"
+);
 
 // Contar notificações não lidas
-$notificacoes_nao_lidas = contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 'admin');
+$notificacoes_nao_lidas = function_exists('contar_notificacoes_nao_lidas')
+    ? contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 'admin')
+    : 0;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -183,6 +217,7 @@ $notificacoes_nao_lidas = contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 
         <a href="financeiro.php"><button>Módulo Financeiro</button></a>
         <a href="atividades.php"><button>Atividades / Conteúdos</button></a>
         <a href="documentos.php"><button>Documentos</button></a>
+        <a href="liberar_cadastro.php"><button>Liberar auto cadastro</button></a>
     </div>
 
     <!-- Turmas -->
@@ -195,6 +230,7 @@ $notificacoes_nao_lidas = contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 
                 <th>Professor</th>
                 <th>Alunos</th>
                 <th>Status</th>
+                <th>Cadastro de Aluno pelo Professor</th>
                 <th>Ação</th>
             </tr>
             <?php if ($turmas && $turmas->num_rows > 0): ?>
@@ -208,6 +244,15 @@ $notificacoes_nao_lidas = contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 
                             <span class="status-badge <?= $t['finalizada'] ? 'status-finalizada' : 'status-ativa' ?>">
                                 <?= $t['finalizada'] ? 'Finalizada' : 'Ativa' ?>
                             </span>
+                        </td>
+                        <td>
+                            <?php if (!$t['professor_pode_cadastrar']): ?>
+                                <a href="?liberar_cadastro_professor=<?= $t['id'] ?>"><button>Liberar</button></a>
+                                <span style="color:red;">Bloqueado</span>
+                            <?php else: ?>
+                                <span style="color:green;">Liberado</span>
+                                <a href="?bloquear_cadastro_professor=<?= $t['id'] ?>"><button>Bloquear</button></a>
+                            <?php endif; ?>
                         </td>
                         <td>
                             <?php if(!$t['finalizada']) { ?>
@@ -224,7 +269,7 @@ $notificacoes_nao_lidas = contar_notificacoes_nao_lidas($conn, $_SESSION['id'], 
                 <?php } ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6">Nenhuma turma cadastrada.</td>
+                    <td colspan="7">Nenhuma turma cadastrada.</td>
                 </tr>
             <?php endif; ?>
         </table>

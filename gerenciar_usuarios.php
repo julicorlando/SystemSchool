@@ -13,6 +13,9 @@ $acao = $_GET['acao'] ?? 'listar';
 $tipo = $_GET['tipo'] ?? 'alunos';
 $id = intval($_GET['id'] ?? 0);
 
+// Filtro por turma
+$turma_filtro = intval($_GET['turma_filtro'] ?? 0);
+
 // Valida tipo de usuário
 $tipos_validos = ['alunos', 'professores', 'admins'];
 if (!in_array($tipo, $tipos_validos)) {
@@ -154,6 +157,9 @@ function resetar_senha($conn, $tipo, $id) {
 $dados = null;
 $turmas = null;
 
+// Busca lista de turmas para filtro
+$lista_turmas = $conn->query("SELECT id, nome FROM turmas ORDER BY nome");
+
 if ($acao === 'ver' || $acao === 'editar') {
     if ($tipo === 'alunos') {
         $stmt = $conn->prepare("SELECT a.*, t.nome as turma_nome FROM alunos a LEFT JOIN turmas t ON t.id=a.turma_id WHERE a.id=?");
@@ -187,7 +193,11 @@ if ($acao === 'ver' || $acao === 'editar') {
 $usuarios = null;
 if ($acao === 'listar') {
     if ($tipo === 'alunos') {
-        $usuarios = $conn->query("SELECT a.id, a.nome, a.usuario, a.matricula, a.turma_id, t.nome as turma FROM alunos a LEFT JOIN turmas t ON t.id=a.turma_id ORDER BY a.nome");
+        if ($turma_filtro > 0) {
+            $usuarios = $conn->query("SELECT a.id, a.nome, a.usuario, a.matricula, a.turma_id, t.nome as turma FROM alunos a LEFT JOIN turmas t ON t.id=a.turma_id WHERE a.turma_id = $turma_filtro ORDER BY a.nome");
+        } else {
+            $usuarios = $conn->query("SELECT a.id, a.nome, a.usuario, a.matricula, a.turma_id, t.nome as turma FROM alunos a LEFT JOIN turmas t ON t.id=a.turma_id ORDER BY a.nome");
+        }
     } elseif ($tipo === 'professores') {
         $usuarios = $conn->query("SELECT id, nome, usuario FROM professores ORDER BY nome");
     } else { // admins
@@ -212,6 +222,7 @@ if ($acao === 'listar') {
         .msg-erro { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin: 10px 0; border: 1px solid #f5c6cb; }
         .form-row { display: flex; gap: 15px; }
         .form-row > div { flex: 1; }
+        .turma-filtro-form { margin-bottom: 20px;}
     </style>
 </head>
 <body>
@@ -232,6 +243,21 @@ if ($acao === 'listar') {
         <a href="?tipo=professores" class="tab-button <?= $tipo === 'professores' ? 'active' : '' ?>">Professores</a>
         <a href="?tipo=admins" class="tab-button <?= $tipo === 'admins' ? 'active' : '' ?>">Administradores</a>
     </div>
+
+    <?php if ($acao === 'listar' && $tipo === 'alunos'): ?>
+        <form method="get" class="turma-filtro-form">
+            <input type="hidden" name="tipo" value="alunos">
+            <label for="turma_filtro">Visualizar por turma:</label>
+            <select name="turma_filtro" id="turma_filtro" onchange="this.form.submit()">
+                <option value="0">Todas as turmas</option>
+                <?php if ($lista_turmas) while ($t = $lista_turmas->fetch_assoc()): ?>
+                    <option value="<?= $t['id'] ?>" <?= $turma_filtro == $t['id'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($t['nome']) ?>
+                    </option>
+                <?php endwhile; ?>
+            </select>
+        </form>
+    <?php endif; ?>
 
     <?php if ($acao === 'listar'): ?>
         <h2>Lista de <?= ucfirst($tipo) ?></h2>
