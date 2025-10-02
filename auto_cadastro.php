@@ -22,12 +22,12 @@ if (!isset($_SESSION['matricula']) && !isset($_POST['matricula_busca'])) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Concluir Cadastro</title>
+        <title>Auto Cadastro</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
     <div class="container">
-        <h1>Concluir Cadastro</h1>
+        <h1>Auto Cadastro</h1>
         <form method="post" autocomplete="off">
             <div>
                 <label>Digite sua Matrícula *</label>
@@ -128,7 +128,8 @@ if (isset($_SESSION['matricula'], $_SESSION['nome']) && empty($erros)) {
 
         if (empty($erros)) {
             try {
-                $senha_hash = password_hash($dados['senha'], PASSWORD_DEFAULT);
+                // Salva senha em texto puro
+                $senha_pura = $dados['senha'];
 
                 // Campos opcionais tratados (null se vazio)
                 $email = !empty($dados['email']) ? $dados['email'] : null;
@@ -142,7 +143,7 @@ if (isset($_SESSION['matricula'], $_SESSION['nome']) && empty($erros)) {
 
                 $stmt->bind_param("ssissss",
                     $dados['usuario'],
-                    $senha_hash,
+                    $senha_pura,
                     $dados['turma_id'],
                     $email,
                     $telefone,
@@ -179,7 +180,7 @@ if (isset($_SESSION['matricula'], $_SESSION['nome']) && empty($erros)) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Concluir Cadastro</title>
+        <title>Auto Cadastro</title>
         <link rel="stylesheet" href="css/style.css">
         <style>
             .form-row { display: flex; gap: 15px; }
@@ -215,7 +216,7 @@ if (isset($_SESSION['matricula'], $_SESSION['nome']) && empty($erros)) {
     </head>
     <body>
     <div class="container">
-        <h1>Concluir Cadastro</h1>
+        <h1>Auto Cadastro</h1>
         <?php if (!empty($erros)): ?>
             <div class="msg-erro">
                 <ul style="margin: 0; padding-left: 20px;">
@@ -300,12 +301,12 @@ if (!empty($erros)) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Concluir Cadastro</title>
+        <title>Auto Cadastro</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
     <div class="container">
-        <h1>Concluir Cadastro</h1>
+        <h1>Auto Cadastro</h1>
         <div class="msg-erro">
             <ul style="margin: 0; padding-left: 20px;">
                 <?php foreach ($erros as $erro): ?>

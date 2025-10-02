@@ -17,7 +17,7 @@ $id = intval($_GET['id'] ?? 0);
 $turma_filtro = intval($_GET['turma_filtro'] ?? 0);
 
 // Valida tipo de usuário
-$tipos_validos = ['alunos', 'professores', 'admins'];
+$tipos_validos = ['alunos', 'professores', 'admins', 'cobradores']; // adicionado cobradores
 if (!in_array($tipo, $tipos_validos)) {
     header("Location: gerenciar_usuarios.php");
     exit;
@@ -54,6 +54,7 @@ function editar_usuario($conn, $tipo, $id, $dados) {
                 $dados['turma_id'],
                 $id
             );
+            $stmt->execute();
         } elseif ($tipo === 'professores') {
             $stmt = $conn->prepare("UPDATE professores SET nome=?, usuario=? WHERE id=?");
             $stmt->bind_param("ssi",
@@ -61,17 +62,35 @@ function editar_usuario($conn, $tipo, $id, $dados) {
                 $dados['usuario'],
                 $id
             );
+            $stmt->execute();
+        } elseif ($tipo === 'cobradores') {
+            // novos campos: email, telefone, ativo
+            $ativo = isset($dados['ativo']) ? intval($dados['ativo']) : 1;
+            $stmt = $conn->prepare("UPDATE cobradores SET nome=?, usuario=?, email=?, telefone=?, ativo=? WHERE id=?");
+            $stmt->bind_param("ssssii",
+                $dados['nome'],
+                $dados['usuario'],
+                $dados['email'] ?? '',
+                $dados['telefone'] ?? '',
+                $ativo,
+                $id
+            );
+            $stmt->execute();
         } else { // admins
             $stmt = $conn->prepare("UPDATE admins SET usuario=? WHERE id=?");
             $stmt->bind_param("si", $dados['usuario'], $id);
+            $stmt->execute();
         }
-
-        $stmt->execute();
 
         // Atualiza senha se fornecida
         if (!empty($dados['nova_senha'])) {
-            $senha = $dados['nova_senha']; // senha não criptografada!
-            $stmt = $conn->prepare("UPDATE $tipo SET senha=? WHERE id=?");
+            $senha = $dados['nova_senha']; // mantenha hashing em produção!
+            // proteger nome da tabela (tipo)
+            if ($tipo === 'cobradores') {
+                $stmt = $conn->prepare("UPDATE cobradores SET senha=? WHERE id=?");
+            } else {
+                $stmt = $conn->prepare("UPDATE $tipo SET senha=? WHERE id=?");
+            }
             $stmt->bind_param("si", $senha, $id);
             $stmt->execute();
         }
@@ -120,7 +139,11 @@ function deletar_usuario($conn, $tipo, $id) {
             $stmt3->execute();
         }
 
-        $stmt = $conn->prepare("DELETE FROM $tipo WHERE id=?");
+        // Para cobradores, você pode verificar dependências (ex.: logs) se necessário
+        $table = $tipo;
+        if ($tipo === 'cobradores') $table = 'cobradores';
+
+        $stmt = $conn->prepare("DELETE FROM {$table} WHERE id=?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
 
@@ -140,7 +163,9 @@ function resetar_senha($conn, $tipo, $id) {
     $nova_senha = gerar_senha(8);
     $senha = $nova_senha; // senha não criptografada!
 
-    $stmt = $conn->prepare("UPDATE $tipo SET senha=? WHERE id=?");
+    $table = $tipo === 'cobradores' ? 'cobradores' : $tipo;
+
+    $stmt = $conn->prepare("UPDATE {$table} SET senha=? WHERE id=?");
     $stmt->bind_param("si", $senha, $id);
 
     if ($stmt->execute()) {
@@ -175,6 +200,11 @@ if ($acao === 'ver' || $acao === 'editar') {
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $dados = $stmt->get_result()->fetch_assoc();
+    } elseif ($tipo === 'cobradores') {
+        $stmt = $conn->prepare("SELECT * FROM cobradores WHERE id=?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $dados = $stmt->get_result()->fetch_assoc();
     } else {
         $stmt = $conn->prepare("SELECT * FROM admins WHERE id=?");
         $stmt->bind_param("i", $id);
@@ -200,6 +230,8 @@ if ($acao === 'listar') {
         }
     } elseif ($tipo === 'professores') {
         $usuarios = $conn->query("SELECT id, nome, usuario FROM professores ORDER BY nome");
+    } elseif ($tipo === 'cobradores') {
+        $usuarios = $conn->query("SELECT id, nome, usuario, email, telefone, ativo FROM cobradores ORDER BY nome");
     } else { // admins
         $usuarios = $conn->query("SELECT id, usuario FROM admins ORDER BY usuario");
     }
@@ -223,6 +255,12 @@ if ($acao === 'listar') {
         .form-row { display: flex; gap: 15px; }
         .form-row > div { flex: 1; }
         .turma-filtro-form { margin-bottom: 20px;}
+        /* tabela organizada */
+        table.usertable { width:100%; border-collapse: collapse; margin-top:12px; }
+        table.usertable th, table.usertable td { padding:10px 12px; border-bottom:1px solid #eaecef; text-align:left; }
+        table.usertable th { background:#f6f8fa; font-weight:700; }
+        .btn { padding:8px 10px; border-radius:6px; border:0; cursor:pointer; background:#667eea; color:#fff; text-decoration:none; }
+        .btn-ghost { padding:8px 10px; border-radius:6px; border:1px solid #cbd5df; background:transparent; color:#111; text-decoration:none; }
     </style>
 </head>
 <body>
@@ -241,6 +279,7 @@ if ($acao === 'listar') {
     <div class="tab-buttons">
         <a href="?tipo=alunos" class="tab-button <?= $tipo === 'alunos' ? 'active' : '' ?>">Alunos</a>
         <a href="?tipo=professores" class="tab-button <?= $tipo === 'professores' ? 'active' : '' ?>">Professores</a>
+        <a href="?tipo=cobradores" class="tab-button <?= $tipo === 'cobradores' ? 'active' : '' ?>">Cobradores</a>
         <a href="?tipo=admins" class="tab-button <?= $tipo === 'admins' ? 'active' : '' ?>">Administradores</a>
     </div>
 
@@ -262,24 +301,47 @@ if ($acao === 'listar') {
     <?php if ($acao === 'listar'): ?>
         <h2>Lista de <?= ucfirst($tipo) ?></h2>
         <?php if ($usuarios && $usuarios->num_rows > 0): ?>
-            <?php while ($usuario = $usuarios->fetch_assoc()): ?>
-                <div class="user-card">
-                    <?php if ($tipo === 'alunos'): ?>
-                        <h3><?= htmlspecialchars($usuario['nome']) ?> (<?= htmlspecialchars($usuario['usuario']) ?>)</h3>
-                        <p><strong>Matrícula:</strong> <?= htmlspecialchars($usuario['matricula']) ?></p>
-                        <p><strong>Turma:</strong> <?= htmlspecialchars($usuario['turma'] ?? 'Não definida') ?></p>
-                    <?php elseif ($tipo === 'professores'): ?>
-                        <h3><?= htmlspecialchars($usuario['nome']) ?> (<?= htmlspecialchars($usuario['usuario']) ?>)</h3>
-                    <?php else: ?>
-                        <h3><?= htmlspecialchars($usuario['usuario']) ?></h3>
-                    <?php endif; ?>
+            <?php if ($tipo === 'cobradores'): ?>
+                <table class="usertable">
+                    <thead>
+                        <tr><th>Nome</th><th>Usuário</th><th>E-mail</th><th>Telefone</th><th>Ativo</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($u = $usuarios->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($u['nome']) ?></td>
+                                <td><?= htmlspecialchars($u['usuario']) ?></td>
+                                <td><?= htmlspecialchars($u['email']) ?></td>
+                                <td><?= htmlspecialchars($u['telefone']) ?></td>
+                                <td><?= $u['ativo'] ? 'Sim' : 'Não' ?></td>
+                                <td>
+                                    <a class="btn-ghost" href="?acao=ver&tipo=cobradores&id=<?= $u['id'] ?>">Ver</a>
+                                    <a class="btn" href="?acao=editar&tipo=cobradores&id=<?= $u['id'] ?>">Editar</a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <?php while ($usuario = $usuarios->fetch_assoc()): ?>
+                    <div class="user-card">
+                        <?php if ($tipo === 'alunos'): ?>
+                            <h3><?= htmlspecialchars($usuario['nome']) ?> (<?= htmlspecialchars($usuario['usuario']) ?>)</h3>
+                            <p><strong>Matrícula:</strong> <?= htmlspecialchars($usuario['matricula']) ?></p>
+                            <p><strong>Turma:</strong> <?= htmlspecialchars($usuario['turma'] ?? 'Não definida') ?></p>
+                        <?php elseif ($tipo === 'professores'): ?>
+                            <h3><?= htmlspecialchars($usuario['nome']) ?> (<?= htmlspecialchars($usuario['usuario']) ?>)</h3>
+                        <?php else: ?>
+                            <h3><?= htmlspecialchars($usuario['usuario']) ?></h3>
+                        <?php endif; ?>
 
-                    <div class="actions">
-                        <a href="?acao=ver&tipo=<?= $tipo ?>&id=<?= $usuario['id'] ?>"><button>Ver Detalhes</button></a>
-                        <a href="?acao=editar&tipo=<?= $tipo ?>&id=<?= $usuario['id'] ?>"><button>Editar</button></a>
+                        <div class="actions">
+                            <a href="?acao=ver&tipo=<?= $tipo ?>&id=<?= $usuario['id'] ?>"><button class="btn-ghost">Ver Detalhes</button></a>
+                            <a href="?acao=editar&tipo=<?= $tipo ?>&id=<?= $usuario['id'] ?>"><button class="btn">Editar</button></a>
+                        </div>
                     </div>
-                </div>
-            <?php endwhile; ?>
+                <?php endwhile; ?>
+            <?php endif; ?>
         <?php else: ?>
             <p>Nenhum usuário encontrado.</p>
         <?php endif; ?>
@@ -292,19 +354,24 @@ if ($acao === 'listar') {
                 <p><strong>Turma:</strong> <?= htmlspecialchars($dados['turma_nome'] ?? 'Não definida') ?></p>
             <?php elseif ($tipo === 'professores'): ?>
                 <h3><?= htmlspecialchars($dados['nome']) ?> (<?= htmlspecialchars($dados['usuario']) ?>)</h3>
+            <?php elseif ($tipo === 'cobradores'): ?>
+                <h3><?= htmlspecialchars($dados['nome']) ?> (<?= htmlspecialchars($dados['usuario']) ?>)</h3>
+                <p><strong>E-mail:</strong> <?= htmlspecialchars($dados['email'] ?? '') ?></p>
+                <p><strong>Telefone:</strong> <?= htmlspecialchars($dados['telefone'] ?? '') ?></p>
+                <p><strong>Ativo:</strong> <?= isset($dados['ativo']) ? ($dados['ativo'] ? 'Sim' : 'Não') : '—' ?></p>
             <?php else: ?>
                 <h3><?= htmlspecialchars($dados['usuario']) ?></h3>
             <?php endif; ?>
 
             <div class="actions">
-                <a href="?acao=editar&tipo=<?= $tipo ?>&id=<?= $id ?>"><button>Editar</button></a>
+                <a href="?acao=editar&tipo=<?= $tipo ?>&id=<?= $id ?>"><button class="btn">Editar</button></a>
                 <form method="post" style="display: inline;" onsubmit="return confirm('Deseja resetar a senha?')">
                     <input type="hidden" name="acao" value="resetar_senha">
-                    <button type="submit">Resetar Senha</button>
+                    <button type="submit" class="btn-ghost">Resetar Senha</button>
                 </form>
                 <form method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja deletar?')">
                     <input type="hidden" name="acao" value="deletar">
-                    <button type="submit" style="background: #dc3545;">Deletar</button>
+                    <button type="submit" style="background: #dc3545; color:#fff; padding:8px 10px; border-radius:6px; border:0;">Deletar</button>
                 </form>
             </div>
         </div>
@@ -337,18 +404,34 @@ if ($acao === 'listar') {
                         <?php endwhile; ?>
                     </select>
                 </div>
+                <?php elseif ($tipo === 'cobradores'): ?>
+                <div>
+                    <label>E-mail</label>
+                    <input type="email" name="email" value="<?= htmlspecialchars($dados['email'] ?? '') ?>">
+                </div>
+                <div>
+                    <label>Telefone</label>
+                    <input type="text" name="telefone" value="<?= htmlspecialchars($dados['telefone'] ?? '') ?>">
+                </div>
+                <div>
+                    <label>Ativo</label>
+                    <select name="ativo">
+                        <option value="1" <?= (!isset($dados['ativo']) || $dados['ativo']) ? 'selected' : '' ?>>Sim</option>
+                        <option value="0" <?= (isset($dados['ativo']) && !$dados['ativo']) ? 'selected' : '' ?>>Não</option>
+                    </select>
+                </div>
                 <?php endif; ?>
             </div>
             <div>
                 <label>Nova Senha (deixe em branco para manter a atual)</label>
                 <input type="password" name="nova_senha" placeholder="Digite nova senha ou deixe em branco">
             </div>
-            <button type="submit">Salvar Alterações</button>
+            <button type="submit" class="btn">Salvar Alterações</button>
         </form>
     <?php endif; ?>
 
-    <a href="?tipo=<?= $tipo ?>"><button>Voltar à Lista</button></a>
-    <a href="dashboard_admin.php"><button>Dashboard</button></a>
+    <a href="?tipo=<?= $tipo ?>"><button class="btn-ghost">Voltar à Lista</button></a>
+    <a href="dashboard_admin.php"><button class="btn">Dashboard</button></a>
 </div>
 </body>
 </html>

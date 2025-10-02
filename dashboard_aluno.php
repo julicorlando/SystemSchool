@@ -135,6 +135,58 @@ $freq_total = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 $stats['frequencia_total'] = $freq_total['total_dias'] > 0 ? round(($freq_total['presencas'] / $freq_total['total_dias']) * 100, 1) : 0;
+
+// ----------- ALERTA DE MENSALIDADES PENDENTES (NÃO ISENÇÃO) -------------
+$alerta_mensalidades = '';
+$stmt = $conn->prepare("
+    SELECT pp.nome 
+    FROM contas_aluno ca 
+    JOIN planos_pagamento pp ON ca.plano_id = pp.id 
+    WHERE ca.aluno_id = ? AND ca.ativo = 1
+    LIMIT 1
+");
+$stmt->bind_param("i", $id_aluno);
+$stmt->execute();
+$res_plano = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+if (!$res_plano || strtolower(trim($res_plano['nome'])) !== 'isenção') {
+    // Não é isenção, verifica mensalidades em aberto
+    $stmt = $conn->prepare("
+        SELECT m.valor, m.data_vencimento 
+        FROM mensalidades m
+        JOIN contas_aluno ca ON m.conta_id = ca.id
+        WHERE ca.aluno_id = ? AND m.status != 'pago'
+        ORDER BY m.data_vencimento ASC
+    ");
+    $stmt->bind_param("i", $id_aluno);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+
+    $mensalidades_em_aberto = [];
+    $valor_total_pendente = 0;
+    while ($row = $result->fetch_assoc()) {
+        $mensalidades_em_aberto[] = [
+            'valor' => $row['valor'],
+            'data_vencimento' => $row['data_vencimento']
+        ];
+        $valor_total_pendente += floatval($row['valor']);
+    }
+
+    if (count($mensalidades_em_aberto) > 0) {
+        $html_lista = "";
+        foreach ($mensalidades_em_aberto as $m) {
+            $html_lista .= "<li>Vencimento: <b>".date('d/m/Y', strtotime($m['data_vencimento']))."</b> - Valor: <b>R$ ".number_format($m['valor'], 2, ',', '.')."</b></li>";
+        }
+
+        $alerta_mensalidades = "<div class='msg-erro' style='margin-top:12px;'>
+            <strong>Atenção:</strong> Você possui <b>".count($mensalidades_em_aberto)."</b> mensalidade(s) em aberto.<br>
+            <ul>{$html_lista}</ul>
+            Valor total pendente: <b>R$ " . number_format($valor_total_pendente, 2, ',', '.') . "</b>
+            <br>Procure a secretaria para regularização.</div>";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -171,9 +223,6 @@ $stats['frequencia_total'] = $freq_total['total_dias'] > 0 ? round(($freq_total[
         <h1>Painel do Aluno</h1>
         <div>
             <span>Bem-vindo, <?= htmlspecialchars($_SESSION['nome'] ?? $_SESSION['usuario']) ?>!</span>
-            <?php if ($stats['mensagens'] > 0): ?>
-                <span class="notification-badge"><?= $stats['mensagens'] ?></span>
-            <?php endif; ?>
         </div>
     </div>
     
@@ -231,6 +280,11 @@ $stats['frequencia_total'] = $freq_total['total_dias'] > 0 ? round(($freq_total[
             <div class="number"><?= $stats['mensagens'] ?></div>
         </div>
     </div>
+
+    <!-- ALERTA MENSALIDADE PENDENTE -->
+    <?php if ($alerta_mensalidades): ?>
+        <?= $alerta_mensalidades ?>
+    <?php endif; ?>
     
     <!-- Ações Rápidas -->
     <h2>Ações Rápidas</h2>

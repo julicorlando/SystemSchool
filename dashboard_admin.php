@@ -86,6 +86,30 @@ $stats['total_professores'] = $conn->query("SELECT COUNT(*) as total FROM profes
 $stats['total_turmas'] = $conn->query("SELECT COUNT(*) as total FROM turmas")->fetch_assoc()['total'] ?? 0;
 $stats['turmas_ativas'] = $conn->query("SELECT COUNT(*) as total FROM turmas WHERE finalizada=0")->fetch_assoc()['total'] ?? 0;
 
+// --- NOVO BLOCO: alunos em atraso e dias de atraso ---
+$alunos_atraso = 0;
+$dias_media_atraso = 0;
+$dias_total_atraso = 0;
+
+$resAtraso = $conn->query("
+    SELECT m.data_vencimento, a.id
+    FROM mensalidades m
+    JOIN contas_aluno ca ON m.conta_id = ca.id
+    JOIN alunos a ON ca.aluno_id = a.id
+    WHERE m.status != 'pago' AND m.data_vencimento < CURDATE()
+");
+
+$ids_alunos = [];
+$dias_soma = 0;
+while ($row = $resAtraso->fetch_assoc()) {
+    $ids_alunos[$row['id']] = true;
+    $dias = (strtotime(date('Y-m-d')) - strtotime($row['data_vencimento'])) / (60 * 60 * 24);
+    $dias_soma += $dias;
+    $dias_total_atraso++;
+}
+$alunos_atraso = count($ids_alunos);
+$dias_media_atraso = $dias_total_atraso > 0 ? round($dias_soma / $dias_total_atraso, 1) : 0;
+
 // Listar turmas
 $turmas = $conn->query(
     "SELECT t.id, t.nome, t.turno, p.nome as professor, t.finalizada, t.professor_pode_cadastrar,
@@ -200,6 +224,13 @@ $notificacoes_nao_lidas = function_exists('contar_notificacoes_nao_lidas')
             <h3>Turmas Ativas</h3>
             <div class="number"><?= $stats['turmas_ativas'] ?></div>
         </div>
+        <div class="dashboard-card">
+            <h3>Alunos em atraso</h3>
+            <div class="number"><?= $alunos_atraso ?></div>
+            <div style="margin-top:8px;font-size:0.95em;color:#a94442;">
+                <span>Média dias atraso: <b><?= $dias_media_atraso ?></b></span>
+            </div>
+        </div>
     </div>
     
     <!-- Ações Rápidas -->
@@ -218,6 +249,8 @@ $notificacoes_nao_lidas = function_exists('contar_notificacoes_nao_lidas')
         <a href="atividades.php"><button>Atividades / Conteúdos</button></a>
         <a href="documentos.php"><button>Documentos</button></a>
         <a href="liberar_cadastro.php"><button>Liberar auto cadastro</button></a>
+        <a href="cobrancas.php"><button>Cobranças</button></a>
+        <a href="cadastro_cobradores.php"><button>Cadastro de AGC</button></a>
     </div>
 
     <!-- Turmas -->

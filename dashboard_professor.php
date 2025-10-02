@@ -43,9 +43,6 @@ $stats['atividades'] = $result->get_result()->fetch_assoc()['total'];
         <h1>Painel do Professor</h1>
         <div>
             <span>Bem-vindo, <?= htmlspecialchars($_SESSION['nome'] ?? $_SESSION['usuario']) ?>!</span>
-            <?php if ($stats['mensagens'] > 0): ?>
-                <span class="notification-badge"><?= $stats['mensagens'] ?></span>
-            <?php endif; ?>
         </div>
     </div>
     
@@ -75,10 +72,7 @@ $stats['atividades'] = $result->get_result()->fetch_assoc()['total'];
         <a href="atividades.php"><button>Enviar/Ver Atividades e conteúdos</button></a>
         <a href="notas_faltas.php"><button>Atribuir Notas e Faltas</button></a>
         <a href="frequencia.php"><button>Controle de Frequência</button></a>
-        <a href="comunicacao.php"><button>Comunicação 
-            <?php if ($stats['mensagens'] > 0): ?>
-                <span class="notification-badge"><?= $stats['mensagens'] ?></span>
-            <?php endif; ?>
+        <a href="comunicacao.php"><button>Comunicação</button></a>
         </button></a>
         <a href="calendario.php"><button>Calendário Escolar</button></a>
         <a href="relatorios.php"><button>Relatórios</button></a>
