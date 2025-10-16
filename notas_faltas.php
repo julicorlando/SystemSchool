@@ -84,7 +84,7 @@ if($tipo == "aluno") {
         </form>
         <?php if(isset($alunos)) { ?>
         <table>
-            <tr><th>Aluno</th><th>Turma</th><th>Nota 1</th><th>Nota 2</th><th>Média</th><th>Faltas</th><th>Status</th><th>Ações</th></tr>
+            <tr><th>Aluno</th><th>Turma</th><th>Nota 1</th><th>Nota 2</th><th>Média</th><th>Faltas</th><th>Status</th><th>Pendente</th><th>Ações</th></tr>
             <?php while($a = $alunos->fetch_assoc()) {
                 $nf = $conn->query("SELECT nota1, nota2, media, faltas FROM notas_faltas WHERE aluno_id=".$a['id'])->fetch_assoc();
                 $media = $nf['media'] ?? null;
@@ -102,6 +102,16 @@ if($tipo == "aluno") {
                     $status = "-";
                 }
                 $bloquear = turma_finalizada($conn, $a['turma_id']);
+                
+                // Contar atividades pendentes: tipo='atividade' E sem resposta do aluno
+                $pendentes_query = "SELECT COUNT(*) as total FROM atividades atv 
+                                    WHERE atv.turma_id={$a['turma_id']} 
+                                    AND (atv.tipo='atividade' OR atv.tipo IS NULL)
+                                    AND NOT EXISTS (
+                                        SELECT 1 FROM respostas r 
+                                        WHERE r.atividade_id=atv.id AND r.aluno_id={$a['id']}
+                                    )";
+                $pendentes = $conn->query($pendentes_query)->fetch_assoc()['total'];
             ?>
             <form method="post">
             <tr>
@@ -112,6 +122,7 @@ if($tipo == "aluno") {
                 <td><?=($nf['media']??'-')?></td>
                 <td><input type="number" name="faltas" value="<?=$nf['faltas']??''?>" required <?=($bloquear?'readonly':'')?>></td>
                 <td><?=$status?></td>
+                <td><?=$pendentes?> atividade<?=($pendentes!=1?'s':'')?></td>
                 <td>
                     <input type="hidden" name="aluno_id" value="<?=$a['id']?>">
                     <?php if (!$bloquear) { ?>
@@ -127,7 +138,7 @@ if($tipo == "aluno") {
 
     <?php if($tipo == "professor") { ?>
         <table>
-            <tr><th>Aluno</th><th>Turma</th><th>Nota 1</th><th>Nota 2</th><th>Média</th><th>Faltas</th><th>Status</th><th>Ações</th></tr>
+            <tr><th>Aluno</th><th>Turma</th><th>Nota 1</th><th>Nota 2</th><th>Média</th><th>Faltas</th><th>Status</th><th>Pendente</th><th>Ações</th></tr>
             <?php while($a = $alunos->fetch_assoc()) {
                 $nf = $conn->query("SELECT nota1, nota2, media, faltas FROM notas_faltas WHERE aluno_id=".$a['id'])->fetch_assoc();
                 $media = $nf['media'] ?? null;
@@ -144,6 +155,16 @@ if($tipo == "aluno") {
                     $status = "-";
                 }
                 $bloquear = turma_finalizada($conn, $a['turma_id']);
+                
+                // Contar atividades pendentes: tipo='atividade' E sem resposta do aluno
+                $pendentes_query = "SELECT COUNT(*) as total FROM atividades atv 
+                                    WHERE atv.turma_id={$a['turma_id']} 
+                                    AND (atv.tipo='atividade' OR atv.tipo IS NULL)
+                                    AND NOT EXISTS (
+                                        SELECT 1 FROM respostas r 
+                                        WHERE r.atividade_id=atv.id AND r.aluno_id={$a['id']}
+                                    )";
+                $pendentes = $conn->query($pendentes_query)->fetch_assoc()['total'];
             ?>
             <form method="post">
             <tr>
@@ -154,6 +175,7 @@ if($tipo == "aluno") {
                 <td><?=($nf['media']??'-')?></td>
                 <td><input type="number" name="faltas" value="<?=$nf['faltas']??''?>" required <?=($bloquear?'readonly':'')?>></td>
                 <td><?=$status?></td>
+                <td><?=$pendentes?> atividade<?=($pendentes!=1?'s':'')?></td>
                 <td>
                     <input type="hidden" name="aluno_id" value="<?=$a['id']?>">
                     <?php if (!$bloquear) { ?>
