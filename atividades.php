@@ -15,11 +15,12 @@ if($tipo == "professor" && isset($_POST['turma_id']) && isset($_POST['titulo']) 
     $turma_id = intval($_POST['turma_id']);
     $titulo = $_POST['titulo'];
     $descricao = $_POST['descricao'];
+    $tipo_atividade = $_POST['tipo_atividade'] ?? 'atividade'; // Padrão: atividade
     $arquivo = $_FILES['pdf'];
     if ($arquivo['type'] == "application/pdf") {
         $nome_arquivo = uniqid().".pdf";
         move_uploaded_file($arquivo['tmp_name'], "uploads/".$nome_arquivo);
-        $conn->query("INSERT INTO atividades (titulo, descricao, turma_id, professor_id, data_envio, arquivo) VALUES ('$titulo', '$descricao', $turma_id, $id, NOW(), '$nome_arquivo')");
+        $conn->query("INSERT INTO atividades (titulo, descricao, tipo, turma_id, professor_id, data_envio, arquivo) VALUES ('$titulo', '$descricao', '$tipo_atividade', $turma_id, $id, NOW(), '$nome_arquivo')");
         echo "<script>alert('Atividade enviada!');window.location='atividades.php';</script>";
     } else {
         echo "<script>alert('Envie apenas PDF!');window.location='atividades.php';</script>";
@@ -80,6 +81,11 @@ if($tipo == "professor") {
                     <option value="<?=$t['id']?>"><?=$t['nome']?></option>
                 <?php } ?>
             </select>
+            <label>Tipo</label>
+            <select name="tipo_atividade" required>
+                <option value="atividade">Atividade (requer resposta do aluno)</option>
+                <option value="conteudo">Conteúdo (apenas para leitura)</option>
+            </select>
             <label>Título</label>
             <input type="text" name="titulo" required>
             <label>Descrição</label>
@@ -96,7 +102,10 @@ if($tipo == "professor") {
         <?php
         if($ativs_prof) {
             while($a = $ativs_prof->fetch_assoc()) {
-                echo "<div><b>{$a['titulo']}</b> ({$a['data_envio']}) ";
+                $tipo_ativ = $a['tipo'] ?? 'atividade';
+                $tipo_label = $tipo_ativ == 'conteudo' ? 'CONTEÚDO' : 'ATIVIDADE';
+                $tipo_cor = $tipo_ativ == 'conteudo' ? '#3498db' : '#9b59b6';
+                echo "<div><b>{$a['titulo']}</b> <span style='background:$tipo_cor;color:white;padding:2px 8px;border-radius:3px;font-size:0.8em;'>$tipo_label</span> ({$a['data_envio']}) ";
                 if ($a['arquivo']) {
                     echo "<a href='uploads/{$a['arquivo']}' target='_blank'><button>Baixar PDF</button></a>";
                 }
@@ -112,7 +121,22 @@ if($tipo == "professor") {
         if($ativs) {
             while($a = $ativs->fetch_assoc()) { ?>
             <div style="border-bottom:1px solid #eee; padding:10px;">
-                <b><?=$a['titulo']?></b> <br>
+                <b><?=$a['titulo']?></b> 
+                <?php 
+                $tipo_ativ = $a['tipo'] ?? 'atividade';
+                if($tipo_ativ == 'conteudo') {
+                    echo '<span style="background:#3498db;color:white;padding:2px 8px;border-radius:3px;font-size:0.8em;margin-left:5px;">CONTEÚDO</span>';
+                } else {
+                    // Verifica se é atividade e se o aluno já enviou
+                    $ja_enviou = $conn->query("SELECT id FROM respostas WHERE atividade_id={$a['id']} AND aluno_id=$id")->num_rows > 0;
+                    if($ja_enviou) {
+                        echo '<span style="background:#27ae60;color:white;padding:2px 8px;border-radius:3px;font-size:0.8em;margin-left:5px;">RESPONDIDA</span>';
+                    } else {
+                        echo '<span style="background:#e74c3c;color:white;padding:2px 8px;border-radius:3px;font-size:0.8em;margin-left:5px;">PENDENTE</span>';
+                    }
+                }
+                ?>
+                <br>
                 Professor: <?=$a['professor']?> <br>
                 Descrição: <?=$a['descricao']?> <br>
                 Enviada em: <?=$a['data_envio']?> <br>
@@ -120,13 +144,14 @@ if($tipo == "professor") {
                 <a href="uploads/<?=$a['arquivo']?>" target="_blank"><button>Baixar PDF</button></a>
                 <?php } ?>
                 <?php
-                // Permitir envio de resposta apenas se turma não estiver finalizada e não houver resposta ainda
-                $ja_enviou = $conn->query("SELECT id FROM respostas WHERE atividade_id={$a['id']} AND aluno_id=$id")->num_rows > 0;
-                if(!$turma_finalizada && !$ja_enviou) { ?>
-                <a href="enviar_resposta.php?atividade_id=<?=$a['id']?>"><button>Enviar Resposta (PDF)</button></a>
-                <?php } elseif($ja_enviou) { ?>
-                <span style="color:green;">Você já enviou resposta.</span>
-                <?php } ?>
+                // Permitir envio de resposta apenas se for atividade (não conteúdo), turma não estiver finalizada e não houver resposta ainda
+                if($tipo_ativ == 'atividade') {
+                    if(!$turma_finalizada && !$ja_enviou) { ?>
+                    <a href="enviar_resposta.php?atividade_id=<?=$a['id']?>"><button>Enviar Resposta (PDF)</button></a>
+                    <?php } elseif($ja_enviou) { ?>
+                    <span style="color:green;">Você já enviou resposta.</span>
+                    <?php }
+                } ?>
             </div>
         <?php } } ?>
     <?php } ?>

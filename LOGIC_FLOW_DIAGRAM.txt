@@ -1,0 +1,251 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                 FLUXO DE LÓGICA - ATIVIDADES PENDENTES                        ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+1. CRIAÇÃO DE ATIVIDADE (Professor)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────┐
+   │ Professor acessa│
+   │ atividades.php  │
+   └────────┬────────┘
+            │
+            ▼
+   ┌─────────────────────────┐
+   │ Formulário com:         │
+   │ - Turma                 │
+   │ - Tipo (NOVO!)          │      ◄── Escolhe tipo
+   │ - Título                │
+   │ - Descrição             │
+   │ - Arquivo PDF           │
+   └────────┬────────────────┘
+            │
+            ▼
+   ┌─────────────────────────────────────┐
+   │ INSERT INTO atividades              │
+   │ (titulo, descricao, tipo, ...)      │  ◄── Inclui campo tipo
+   │ VALUES (?, ?, 'atividade/conteudo') │
+   └────────┬────────────────────────────┘
+            │
+            ▼
+   ┌──────────────────────────────────┐
+   │ Atividade salva no banco         │
+   │ com tipo definido                │
+   └──────────────────────────────────┘
+
+
+2. VISUALIZAÇÃO ALUNO - LISTA DE ATIVIDADES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────┐
+   │ Aluno acessa    │
+   │ atividades.php  │
+   └────────┬────────┘
+            │
+            ▼
+   ┌──────────────────────────────────┐
+   │ SELECT atividades WHERE          │
+   │ turma_id = aluno.turma_id        │
+   └────────┬─────────────────────────┘
+            │
+            ▼
+   ┌──────────────────────────────────┐
+   │ Para cada atividade:             │
+   │                                  │
+   │ tipo_ativ = atividade.tipo       │
+   └────────┬─────────────────────────┘
+            │
+            ├─────────────────────────────────────────┐
+            │                                         │
+            ▼                                         ▼
+   tipo = 'conteudo' ?                      tipo = 'atividade' ?
+            │                                         │
+            │ SIM                                     │ SIM
+            ▼                                         ▼
+   ┌──────────────────┐                    ┌──────────────────────┐
+   │ Badge: CONTEÚDO  │                    │ Verifica se aluno    │
+   │ Cor: Azul        │                    │ já enviou resposta   │
+   │ Botão: NENHUM    │                    └─────────┬────────────┘
+   └──────────────────┘                              │
+                                                     │
+                                    ┌────────────────┴─────────────────┐
+                                    │                                  │
+                                    ▼                                  ▼
+                            ja_enviou = true                   ja_enviou = false
+                                    │                                  │
+                                    ▼                                  ▼
+                        ┌──────────────────┐              ┌──────────────────┐
+                        │ Badge: RESPONDIDA│              │ Badge: PENDENTE  │
+                        │ Cor: Verde       │              │ Cor: Vermelho    │
+                        │ Mensagem: "Você  │              │ Botão: Enviar    │
+                        │ já enviou..."    │              │ Resposta (PDF)   │
+                        └──────────────────┘              └──────────────────┘
+
+
+3. CONTADOR NO DASHBOARD DO ALUNO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────────┐
+   │ Aluno acessa        │
+   │ dashboard_aluno.php │
+   └──────────┬──────────┘
+              │
+              ▼
+   ┌──────────────────────────────────────────┐
+   │ Query de contagem:                       │
+   │                                          │
+   │ SELECT COUNT(*) FROM atividades a        │
+   │ WHERE a.turma_id = ?                     │
+   │   AND (a.tipo='atividade' OR tipo IS NULL)│  ◄── Filtra tipo
+   │   AND NOT EXISTS (                       │
+   │       SELECT 1 FROM respostas r          │
+   │       WHERE r.atividade_id=a.id          │  ◄── Verifica resposta
+   │         AND r.aluno_id=?                 │
+   │   )                                      │
+   └──────────┬───────────────────────────────┘
+              │
+              ▼
+   ┌──────────────────────┐
+   │ pendentes = N        │
+   └──────────┬───────────┘
+              │
+              ▼
+   ┌──────────────────────────────────┐
+   │ N > 0 ?                          │
+   └──────────┬──────────┬────────────┘
+              │          │
+           SIM │          │ NÃO
+              ▼          ▼
+   ┌──────────────┐   ┌──────────────┐
+   │ Mostra badge │   │ Não mostra   │
+   │ vermelho: N  │   │ badge        │
+   └──────────────┘   └──────────────┘
+
+
+4. COLUNA PENDENTE (Notas/Faltas - Professor/Admin)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────────┐
+   │ Professor/Admin     │
+   │ acessa              │
+   │ notas_faltas.php    │
+   └──────────┬──────────┘
+              │
+              ▼
+   ┌──────────────────────────────┐
+   │ Lista alunos da(s) turma(s)  │
+   └──────────┬───────────────────┘
+              │
+              ▼
+   ┌──────────────────────────────────────────┐
+   │ Para cada aluno:                         │
+   │                                          │
+   │ Executa query de contagem de pendentes  │
+   │ (mesma lógica do dashboard)              │
+   └──────────┬───────────────────────────────┘
+              │
+              ▼
+   ┌──────────────────────────────┐
+   │ Exibe na coluna "Pendente":  │
+   │ "N atividade(s)"             │
+   └──────────────────────────────┘
+
+
+5. FLUXO DE ENVIO DE RESPOSTA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────────┐
+   │ Aluno clica em      │
+   │ "Enviar Resposta"   │
+   └──────────┬──────────┘
+              │
+              ▼
+   ┌──────────────────────┐
+   │ enviar_resposta.php  │
+   └──────────┬───────────┘
+              │
+              ▼
+   ┌──────────────────────────────┐
+   │ Upload PDF e INSERT INTO     │
+   │ respostas (atividade_id,     │
+   │            aluno_id, ...)    │
+   └──────────┬───────────────────┘
+              │
+              ▼
+   ┌──────────────────────────────────────┐
+   │ Volta para atividades.php            │
+   │                                      │
+   │ Nova verificação:                    │
+   │ - Badge muda: PENDENTE → RESPONDIDA  │
+   │ - Contador diminui: N → N-1          │
+   │ - Botão "Enviar" desaparece          │
+   └──────────────────────────────────────┘
+
+
+RESUMO DOS FILTROS NA CONTAGEM DE PENDENTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  ✅ INCLUÍDO NO CONTADOR                                    │
+│  ━━━━━━━━━━━━━━━━━━━━━━                                    │
+│  • Atividades da turma do aluno                            │
+│  • tipo = 'atividade' (ou NULL para retrocompatibilidade)  │
+│  • SEM resposta do aluno registrada                        │
+│                                                             │
+│  ❌ EXCLUÍDO DO CONTADOR                                    │
+│  ━━━━━━━━━━━━━━━━━━━━━━                                    │
+│  • Atividades tipo = 'conteudo'                            │
+│  • Atividades COM resposta do aluno                        │
+│  • Atividades de outras turmas                             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+
+MAPEAMENTO DE CORES
+━━━━━━━━━━━━━━━━━━━
+
+Badge CONTEÚDO:     ████ #3498db (Azul)
+Badge ATIVIDADE:    ████ #9b59b6 (Roxo) - Só na lista do professor
+Badge PENDENTE:     ████ #e74c3c (Vermelho)
+Badge RESPONDIDA:   ████ #27ae60 (Verde)
+Contador Dashboard: ████ #e74c3c (Vermelho) - circular
+
+
+CONDIÇÕES PARA MOSTRAR BOTÃO "ENVIAR RESPOSTA"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌────────────────────────────────────────────┐
+│ Botão aparece APENAS quando:               │
+│                                            │
+│ ✓ tipo_ativ == 'atividade'                │
+│ ✓ !turma_finalizada                       │
+│ ✓ !ja_enviou (sem resposta)               │
+│                                            │
+│ Se tipo == 'conteudo':                     │
+│ ✗ Botão NUNCA aparece                     │
+└────────────────────────────────────────────┘
+
+
+TABELAS DO BANCO DE DADOS ENVOLVIDAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌──────────────┐       ┌──────────────┐       ┌──────────────┐
+│  atividades  │       │  respostas   │       │   alunos     │
+├──────────────┤       ├──────────────┤       ├──────────────┤
+│ id           │◄──────│ atividade_id │       │ id           │
+│ titulo       │       │ aluno_id     │──────►│ nome         │
+│ descricao    │       │ arquivo      │       │ turma_id     │
+│ tipo ◄─NOVO! │       │ data_envio   │       └──────────────┘
+│ turma_id     │       └──────────────┘
+│ professor_id │
+│ data_envio   │
+│ arquivo      │
+└──────────────┘
+
+Campo 'tipo': ENUM('conteudo', 'atividade') NOT NULL DEFAULT 'atividade'
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Implementação completa e testada! ✅
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
